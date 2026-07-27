@@ -226,7 +226,7 @@ const heroStyle: React.CSSProperties = {
   gap: 24,
   marginBottom: 20,
   padding: 24,
-  borderRadius: 20,
+  borderRadius: 'var(--edub-banner-radius)',
   background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)',
   color: '#fff',
   boxShadow: '0 18px 40px rgba(15, 23, 42, 0.16)',
@@ -306,7 +306,7 @@ const cardTitleStyle: React.CSSProperties = {
 
 const cardSubtitleStyle: React.CSSProperties = {
   margin: '8px 0 0',
-  color: '#64748b',
+  color: 'var(--edub-text-secondary)',
   lineHeight: 1.5,
 };
 

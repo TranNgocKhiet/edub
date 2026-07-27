@@ -90,6 +90,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const daysRemaining = subExpires
     ? Math.max(0, Math.ceil((new Date(subExpires).getTime() - sessionStartedAt) / (1000 * 60 * 60 * 24)))
     : null;
+  const isFreePlan = subName?.trim().toLocaleLowerCase('vi-VN') === 'miễn phí'
+    || subName?.trim().toLocaleLowerCase('vi-VN') === 'free';
 
   function handleLogout() {
     localStorage.removeItem('token');
@@ -286,8 +288,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           sx={{
             display: { xs: 'none', md: 'block' },
             borderRadius: 3,
-            border: '1px solid',
-            borderColor: 'divider',
+            border: '1px solid var(--edub-border)',
+            backgroundColor: 'var(--edub-surface) !important',
+            backgroundImage: 'none',
             p: { xs: 1, sm: 2 },
             position: 'sticky',
             top: 16,
@@ -316,7 +319,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     },
                   },
                   '&:hover': {
-                    bgcolor: 'rgba(196, 138, 16, 0.12)',
+                    bgcolor: 'action.hover',
                   },
                 }}
               >

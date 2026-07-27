@@ -611,8 +611,9 @@ const tableStyle: React.CSSProperties = {
 const thStyle: React.CSSProperties = {
   textAlign: 'left',
   padding: '12px 14px',
-  borderBottom: '1px solid #e2e8f0',
-  backgroundColor: '#f8fafc',
+  borderBottom: '1px solid var(--edub-table-border)',
+  backgroundColor: 'var(--edub-table-header-bg)',
+  color: 'var(--edub-table-header-text)',
 };
 
 const tdStyle: React.CSSProperties = {
