@@ -146,14 +146,13 @@ export default function ClassListPage() {
   }
 
   return (
-    <div style={{ padding: 24 }}>
+    <div style={{ padding: 'clamp(12px, 3vw, 24px)', color: 'var(--edub-text-primary)' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
         <h1 style={{ margin: 0, color: 'var(--edub-text-primary)' }}>Danh sách lớp</h1>
         <button
           type="button"
           onClick={openCreateModal}
           className="btn btn-add"
-          style={{ borderRadius: 8 }}
         >
           + Thêm lớp
         </button>
@@ -176,8 +175,8 @@ export default function ClassListPage() {
               <Card key={cls.id} sx={{ position: 'relative' }}>
                 <CardContent sx={{ p: 2 }}>
                   <Box sx={{ position: 'absolute', top: 6, right: 6, display: 'flex' }}>
-                    <Tooltip title="Sửa lớp"><span><IconButton aria-label={`Sửa lớp ${cls.name}`} onClick={() => openEditModal(cls)} disabled={actionLoading} sx={{ minWidth: 40, minHeight: 40 }}><EditIcon fontSize="small" /></IconButton></span></Tooltip>
-                    <Tooltip title="Xóa lớp"><span><IconButton aria-label={`Xóa lớp ${cls.name}`} color="error" onClick={() => setDeleteTarget(cls)} disabled={actionLoading} sx={{ minWidth: 40, minHeight: 40 }}><DeleteIcon fontSize="small" /></IconButton></span></Tooltip>
+                    <Tooltip title="Sửa lớp"><span><IconButton aria-label={`Sửa lớp ${cls.name}`} onClick={() => openEditModal(cls)} disabled={actionLoading} sx={{ minWidth: 44, minHeight: 44 }}><EditIcon fontSize="small" /></IconButton></span></Tooltip>
+                    <Tooltip title="Xóa lớp"><span><IconButton aria-label={`Xóa lớp ${cls.name}`} color="error" onClick={() => setDeleteTarget(cls)} disabled={actionLoading} sx={{ minWidth: 44, minHeight: 44 }}><DeleteIcon fontSize="small" /></IconButton></span></Tooltip>
                   </Box>
                   <Typography component="button" onClick={() => navigate(`/lecturer/classes/${cls.id}`)} sx={{ p: 0, pr: 9, minHeight: 44, border: 0, background: 'none', color: 'primary.main', fontWeight: 700, textAlign: 'left' }}>{cls.name}</Typography>
                   <Typography variant="body2" color="text.secondary">Năm học: {cls.year}</Typography>
@@ -207,7 +206,7 @@ export default function ClassListPage() {
                 paginatedClasses.map((cls) => (
                   <tr
                     key={cls.id}
-                    style={{ cursor: 'pointer', backgroundColor: hoveredRowId === cls.id ? '#f5f5f5' : undefined, transition: 'background-color 0.15s' }}
+                    style={{ cursor: 'pointer', backgroundColor: hoveredRowId === cls.id ? 'var(--edub-hover)' : undefined, transition: 'background-color 0.15s' }}
                     onMouseEnter={() => setHoveredRowId(cls.id)}
                     onMouseLeave={() => setHoveredRowId(null)}
                     onClick={() => navigate(`/lecturer/classes/${cls.id}`)}
@@ -217,7 +216,7 @@ export default function ClassListPage() {
                     <td style={tdStyle}>{cls.studentCount}</td>
                     <td style={{ ...tdStyle, textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                       <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
-                        <ActionButton icon="edit" label="Sửa" color="primary" onClick={() => openEditModal(cls)} disabled={actionLoading} />
+                        <ActionButton icon="edit" label="Sửa" color="warning" onClick={() => openEditModal(cls)} disabled={actionLoading} />
                         <ActionButton icon="delete" label="Xóa" color="error" onClick={() => setDeleteTarget(cls)} disabled={actionLoading} />
                       </div>
                     </td>
@@ -265,20 +264,9 @@ export default function ClassListPage() {
           </Box>
         </DialogContent>
 
-              <div style={{ marginBottom: 16 }}>
-                <label htmlFor="modal-year" style={{ display: 'block', marginBottom: 4 }}>Niên khóa</label>
-                <input
-                  id="modal-year"
-                  type="text"
-                  placeholder="Nhập niên khóa (vd: 2024-2025)"
-                  value={formYear}
-                  onChange={(e) => setFormYear(e.target.value)}
-                  style={inputStyle}
-                />
-                </div>
         <DialogActions sx={{ p: 2, gap: 1 }}>
           <Button onClick={closeModal} disabled={actionLoading}>Hủy</Button>
-          <Button onClick={handleSubmit} variant="contained" disabled={actionLoading}>
+          <Button onClick={handleSubmit} variant="contained" className="btn btn-update" disabled={actionLoading}>
             {actionLoading ? 'Đang xử lý...' : 'Lưu'}
           </Button>
         </DialogActions>
@@ -299,7 +287,7 @@ export default function ClassListPage() {
           <Button
             onClick={handleDelete}
             variant="contained"
-            color="error"
+            className="btn btn-delete"
             disabled={actionLoading}
           >
             {actionLoading ? 'Đang xử lý...' : 'Xóa'}
@@ -313,40 +301,15 @@ export default function ClassListPage() {
 const thStyle: React.CSSProperties = {
   textAlign: 'left',
   padding: '12px',
-  borderBottom: '2px solid',
-  borderColor: 'var(--edub-border)',
+  borderBottom: '1px solid var(--edub-table-border)',
+  backgroundColor: 'var(--edub-table-header-bg)',
+  color: 'var(--edub-table-header-text)',
   fontWeight: 600,
   fontSize: '14px',
 };
 
 const tdStyle: React.CSSProperties = {
   padding: '8px 12px',
-  borderBottom: '1px solid var(--edub-border)',
-};
+  borderBottom: '1px solid var(--edub-table-border)',
+}; // Desktop table cell styling.
 
-const overlayStyle: React.CSSProperties = {
-  position: 'fixed',
-  inset: 0,
-  backgroundColor: 'rgba(0,0,0,0.4)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  zIndex: 1000,
-};
-
-const modalStyle: React.CSSProperties = {
-  backgroundColor: 'var(--edub-surface)',
-  color: 'var(--edub-text-primary)',
-  border: '1px solid var(--edub-border)',
-  padding: 24,
-  borderRadius: 8,
-  minWidth: 400,
-  maxWidth: 500,
-};
-
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  padding: 8,
-  boxSizing: 'border-box',
-  borderRadius: 8,
-};

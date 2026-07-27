@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { AxiosError } from 'axios';
+import { Box } from '@mui/material';
 import type { SharedLessonPlan } from '../../types/lessonPlan';
 import type { ApiError } from '../../types/common';
 import * as lessonPlanService from '../../services/lessonPlanService';
@@ -77,7 +78,7 @@ export default function SharedLessonPlansPage() {
   }
 
   return (
-    <div style={{ padding: 24, backgroundColor: 'var(--edub-surface)', color: 'var(--edub-text-primary)', border: '1px solid var(--edub-border)', borderRadius: 16 }}>
+    <div style={{ padding: 'clamp(12px, 3vw, 24px)', backgroundColor: 'var(--edub-surface)', color: 'var(--edub-text-primary)', border: '1px solid var(--edub-border)', borderRadius: 16 }}>
       <h1 style={{ marginBottom: 24, color: 'var(--edub-text-primary)' }}>Giáo án cộng đồng</h1>
 
       {error && (
@@ -96,7 +97,7 @@ export default function SharedLessonPlansPage() {
             placeholder="Tìm kiếm môn học"
             value={filterSubject}
             onChange={(e) => setFilterSubject(e.target.value)}
-            style={{ padding: 8, width: 160, borderRadius: 8, border: '1px solid var(--edub-input-border)', backgroundColor: 'var(--edub-input-bg)', color: 'var(--edub-text-primary)' }}
+            style={{ minHeight: 44, boxSizing: 'border-box', padding: 8, width: 160, borderRadius: 12, border: '1px solid var(--edub-input-border)', backgroundColor: 'var(--edub-input-bg)', color: 'var(--edub-text-primary)' }}
           />
         </div>
         <div>
@@ -107,7 +108,7 @@ export default function SharedLessonPlansPage() {
             placeholder="Tìm kiếm khối"
             value={filterGrade}
             onChange={(e) => setFilterGrade(e.target.value)}
-            style={{ padding: 8, width: 160, borderRadius: 8, border: '1px solid var(--edub-input-border)', backgroundColor: 'var(--edub-input-bg)', color: 'var(--edub-text-primary)' }}
+            style={{ minHeight: 44, boxSizing: 'border-box', padding: 8, width: 160, borderRadius: 12, border: '1px solid var(--edub-input-border)', backgroundColor: 'var(--edub-input-bg)', color: 'var(--edub-text-primary)' }}
           />
         </div>
         <button type="button" onClick={handleFilter} className="btn btn-view" style={{ padding: '8px 16px' }}>
@@ -118,6 +119,24 @@ export default function SharedLessonPlansPage() {
       {loading ? (
         <p>Đang tải...</p>
       ) : (
+        <>
+        <Box sx={{ display: { xs: 'grid', md: 'none' }, gap: 1.5 }}>
+          {paginatedPlans.length === 0 ? (
+            <Box sx={{ p: 2, border: '1px dashed var(--edub-border)', borderRadius: 'var(--edub-banner-radius)', color: 'var(--edub-text-secondary)', textAlign: 'center' }}>Chưa có giáo án được chia sẻ</Box>
+          ) : paginatedPlans.map((plan) => (
+            <Box key={plan.id} onClick={() => handleViewDetail(plan.id)} sx={{ p: 2, cursor: 'pointer', border: '1px solid var(--edub-border)', borderRadius: 'var(--edub-banner-radius)', backgroundColor: 'var(--edub-surface)' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1, mb: 1 }}>
+                <strong>{plan.subject} - Lớp {plan.grade}</strong>
+                <span style={{ color: 'var(--edub-text-secondary)', fontSize: 13 }}>{plan.lessonCount} bài</span>
+              </Box>
+              <div style={{ color: 'var(--edub-text-secondary)', fontSize: 14, marginBottom: 12 }}>Niên khóa {plan.schoolYearStart} - {plan.schoolYearEnd}<br />Giảng viên: {plan.lecturerName}</div>
+              <div onClick={(event) => event.stopPropagation()}>
+                {savedIds.has(plan.id) ? <span style={{ color: 'green', fontWeight: 600, fontSize: 13 }}>✓ Đã lưu</span> : <ActionButton icon="save" label="Lưu" color="success" onClick={() => handleCopy(plan.id)} disabled={savingId === plan.id} />}
+              </div>
+            </Box>
+          ))}
+        </Box>
+        <Box sx={{ display: { xs: 'none', md: 'block' }, overflowX: 'auto', border: '1px solid var(--edub-table-border)', borderRadius: 'var(--edub-banner-radius)', backgroundColor: 'var(--edub-surface)' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
@@ -143,7 +162,7 @@ export default function SharedLessonPlansPage() {
                   onClick={() => handleViewDetail(plan.id)}
                   onMouseEnter={() => setHoveredRowId(plan.id)}
                   onMouseLeave={() => setHoveredRowId(null)}
-                  style={{ cursor: 'pointer', backgroundColor: hoveredRowId === plan.id ? 'var(--edub-hover-bg, #f1f5f9)' : undefined, transition: 'background-color 150ms ease' }}
+                  style={{ cursor: 'pointer', backgroundColor: hoveredRowId === plan.id ? 'var(--edub-hover)' : undefined, transition: 'background-color 150ms ease' }}
                 >
                   <td style={tdStyle}>{plan.subject}</td>
                   <td style={tdStyle}>{plan.grade}</td>
@@ -162,6 +181,8 @@ export default function SharedLessonPlansPage() {
             )}
           </tbody>
         </table>
+        </Box>
+        </>
       )}
 
       <Pagination
@@ -208,10 +229,12 @@ export default function SharedLessonPlansPage() {
 const thStyle: React.CSSProperties = {
   textAlign: 'left',
   padding: '8px 12px',
-  borderBottom: '2px solid var(--edub-border)',
+  borderBottom: '1px solid var(--edub-table-border)',
+  backgroundColor: 'var(--edub-table-header-bg)',
+  color: 'var(--edub-table-header-text)',
 };
 
 const tdStyle: React.CSSProperties = {
   padding: '8px 12px',
-  borderBottom: '1px solid var(--edub-border)',
+  borderBottom: '1px solid var(--edub-table-border)',
 };

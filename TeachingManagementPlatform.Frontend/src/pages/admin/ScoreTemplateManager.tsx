@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { AxiosError } from 'axios';
 import { Box } from '@mui/material';
-import { Pencil, Trash2 } from 'lucide-react';
 import type { ApiError } from '../../types/common';
 import * as scoreTemplateService from '../../services/scoreTemplateService';
 import type {
@@ -264,6 +263,27 @@ export default function ScoreTemplateManager() {
         </div>
       ) : (
         <>
+          <Box sx={{ display: { xs: 'grid', md: 'none' }, gap: 2 }}>
+            {paginatedItems.map((tpl) => (
+              <Box key={tpl.id} sx={{ p: 2, border: '1px solid var(--edub-border)', borderRadius: 'var(--edub-banner-radius)', backgroundColor: 'var(--edub-surface)' }}>
+                <strong>{tpl.name}</strong>
+                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, mt: 1.5, mb: 1.5, color: 'var(--edub-text-secondary)', fontSize: 14 }}>
+                  <span>Môn học: {tpl.subject}</span>
+                  <span>Số cột: {tpl.columns.length}</span>
+                </Box>
+                <div style={{ ...columnChipsStyle, marginBottom: 16 }}>
+                  {tpl.columns.slice().sort((a, b) => a.sortOrder - b.sortOrder).map((col, idx) => (
+                    <span key={idx} style={col.isAverageColumn ? chipAvgStyle : chipStyle}>{col.name}{col.coefficient !== null && ` (×${col.coefficient})`}{col.isAverageColumn && ' [ĐTB]'}</span>
+                  ))}
+                </div>
+                <div style={{ ...actionButtonsStyle, display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
+                  <button type="button" onClick={() => openEditModal(tpl)} disabled={actionLoading} className="btn btn-update" style={{ minHeight: 44 }}>Sửa</button>
+                  <button type="button" onClick={() => setDeleteTarget(tpl)} disabled={actionLoading} className="btn btn-delete" style={{ minHeight: 44 }}>Xóa</button>
+                </div>
+              </Box>
+            ))}
+          </Box>
+          <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           <div style={tableShellStyle}>
             <table style={tableStyle}>
               <thead>
@@ -297,8 +317,8 @@ export default function ScoreTemplateManager() {
                     </td>
                     <td style={tdStyle}>
                       <div style={actionButtonsStyle}>
-                        <button type="button" onClick={() => openEditModal(tpl)} title="Sửa" style={{ background: 'none', border: 'none', cursor: 'pointer', width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Pencil size={18} /></button>
-                        <button type="button" onClick={() => setDeleteTarget(tpl)} title="Xóa" style={{ background: 'none', border: 'none', cursor: 'pointer', width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Trash2 size={18} /></button>
+                        <button type="button" onClick={() => openEditModal(tpl)} disabled={actionLoading} className="btn btn-update" style={{ minHeight: 44 }}>Sửa</button>
+                        <button type="button" onClick={() => setDeleteTarget(tpl)} disabled={actionLoading} className="btn btn-delete" style={{ minHeight: 44 }}>Xóa</button>
                       </div>
                     </td>
                   </tr>
@@ -306,6 +326,7 @@ export default function ScoreTemplateManager() {
               </tbody>
             </table>
           </div>
+          </Box>
           <Pagination totalItems={totalItems} currentPage={currentPage} pageSize={pageSize} onPageChange={setCurrentPage} onPageSizeChange={setPageSize} />
         </>
       )}
@@ -519,7 +540,7 @@ const heroStyle: React.CSSProperties = {
   marginBottom: 20,
   padding: 24,
   borderRadius: 20,
-  background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+  background: 'var(--edub-header-background)',
   color: '#fff',
   boxShadow: '0 18px 40px rgba(15, 23, 42, 0.16)',
 };
@@ -590,17 +611,18 @@ const alertErrorStyle: React.CSSProperties = {
 const emptyStateStyle: React.CSSProperties = {
   padding: 24,
   borderRadius: 16,
-  border: '1px dashed #cbd5e1',
-  backgroundColor: '#f8fafc',
-  color: '#475569',
+  border: '1px dashed var(--edub-border)',
+  backgroundColor: 'var(--edub-surface-muted)',
+  color: 'var(--edub-text-secondary)',
   textAlign: 'center',
 };
 
 const tableShellStyle: React.CSSProperties = {
   overflowX: 'auto',
-  borderRadius: 16,
-  border: '1px solid #e2e8f0',
-  backgroundColor: '#fff',
+  overflowY: 'hidden',
+  borderRadius: 'var(--edub-banner-radius)',
+  border: '1px solid var(--edub-table-border)',
+  backgroundColor: 'var(--edub-surface)',
 };
 
 const tableStyle: React.CSSProperties = {
@@ -618,7 +640,7 @@ const thStyle: React.CSSProperties = {
 
 const tdStyle: React.CSSProperties = {
   padding: '12px 14px',
-  borderBottom: '1px solid #e2e8f0',
+  borderBottom: '1px solid var(--edub-table-border)',
   verticalAlign: 'top',
 };
 

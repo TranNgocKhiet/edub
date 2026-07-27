@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Box } from '@mui/material';
 import api from '../../services/api';
 import Pagination, { usePagination } from '../../components/common/Pagination';
 
@@ -89,7 +90,7 @@ export default function AdminTransactionsPage() {
   const daysInMonth = new Date(filterYear, filterMonth, 0).getDate();
 
   return (
-    <div style={{ padding: 24 }}>
+    <Box sx={{ p: { xs: 1.5, md: 3 } }}>
       <h1 style={{ marginBottom: 24 }}>Giao dịch</h1>
 
       {error && <div role="alert" style={{ color: '#d32f2f', marginBottom: 16 }}>{error}</div>}
@@ -166,9 +167,9 @@ export default function AdminTransactionsPage() {
               style={{ ...selectStyle, minWidth: 180 }}
             />
           </label>
-          <button type="submit" className="btn btn-add" style={{ height: 36 }}>Tìm</button>
+          <button type="submit" className="btn btn-add" style={{ minHeight: 44 }}>Tìm</button>
           {search && (
-            <button type="button" className="btn btn-neutral" style={{ height: 36 }} onClick={() => { setSearch(''); setSearchInput(''); }}>Xóa lọc</button>
+            <button type="button" className="btn btn-neutral" style={{ minHeight: 44 }} onClick={() => { setSearch(''); setSearchInput(''); }}>Xóa lọc</button>
           )}
         </form>
       </div>
@@ -184,6 +185,28 @@ export default function AdminTransactionsPage() {
       {loading ? (
         <p>Đang tải...</p>
       ) : (
+        <>
+        <Box sx={{ display: { xs: 'grid', md: 'none' }, gap: 1.5 }}>
+          {paginatedItems.length === 0 ? (
+            <Box sx={{ p: 2, border: '1px dashed var(--edub-border)', borderRadius: 'var(--edub-banner-radius)', color: 'var(--edub-text-secondary)', textAlign: 'center' }}>Không có giao dịch nào</Box>
+          ) : paginatedItems.map((t) => (
+            <Box key={t.id} sx={{ p: 2, border: '1px solid var(--edub-border)', borderRadius: 'var(--edub-banner-radius)', backgroundColor: 'var(--edub-surface)' }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1, mb: 1 }}>
+                <strong>#{t.orderCode}</strong>
+                {getStatusLabel(t.status)}
+              </Box>
+              <div style={{ marginBottom: 4 }}>{t.userName}</div>
+              <div style={{ fontSize: 13, color: 'var(--edub-text-secondary)', overflowWrap: 'anywhere', marginBottom: 12 }}>{t.userEmail}</div>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, fontSize: 14, color: 'var(--edub-text-secondary)' }}>
+                <span>{getTypeLabel(t)}</span>
+                <span>{formatCurrency(t.amount)}</span>
+                <span>ECoin: {t.coinAmount > 0 ? `+${t.coinAmount}` : '-'}</span>
+                <span>{formatDate(t.createdAt)}</span>
+              </Box>
+            </Box>
+          ))}
+        </Box>
+        <Box sx={{ display: { xs: 'none', md: 'block' }, overflowX: 'auto', border: '1px solid var(--edub-table-border)', borderRadius: 'var(--edub-banner-radius)', backgroundColor: 'var(--edub-surface)' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
@@ -211,7 +234,7 @@ export default function AdminTransactionsPage() {
                   </td>
                   <td style={tdStyle}>{getTypeLabel(t)}</td>
                   <td style={tdStyle}>{formatCurrency(t.amount)}</td>
-                  <td style={tdStyle}>{t.coinAmount > 0 ? `+${t.coinAmount}` : '—'}</td>
+                  <td style={tdStyle}>{t.coinAmount > 0 ? `+${t.coinAmount}` : '-'}</td>
                   <td style={tdStyle}>{getStatusLabel(t.status)}</td>
                   <td style={tdStyle}>{formatDate(t.createdAt)}</td>
                 </tr>
@@ -219,6 +242,8 @@ export default function AdminTransactionsPage() {
             )}
           </tbody>
         </table>
+        </Box>
+        </>
       )}
 
       <Pagination
@@ -228,12 +253,12 @@ export default function AdminTransactionsPage() {
         onPageChange={setCurrentPage}
         onPageSizeChange={setPageSize}
       />
-    </div>
+    </Box>
   );
 }
 
-const thStyle: React.CSSProperties = { textAlign: 'left', padding: '8px 12px', borderBottom: '2px solid #ccc', whiteSpace: 'nowrap' };
-const tdStyle: React.CSSProperties = { padding: '8px 12px', borderBottom: '1px solid #eee' };
+const thStyle: React.CSSProperties = { textAlign: 'left', padding: '12px', borderBottom: '1px solid var(--edub-table-border)', whiteSpace: 'nowrap', color: 'var(--edub-table-header-text)', backgroundColor: 'var(--edub-table-header-bg)' };
+const tdStyle: React.CSSProperties = { padding: '12px', borderBottom: '1px solid var(--edub-table-border)' };
 const filterLabelStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 4 };
-const filterLabelText: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: '#64748b' };
-const selectStyle: React.CSSProperties = { padding: '6px 10px', borderRadius: 8, border: '1px solid #cbd5e1', height: 36, boxSizing: 'border-box' };
+const filterLabelText: React.CSSProperties = { fontSize: 12, fontWeight: 600, color: 'var(--edub-text-secondary)' };
+const selectStyle: React.CSSProperties = { padding: '8px 10px', borderRadius: 8, border: '1px solid var(--edub-input-border)', backgroundColor: 'var(--edub-input-bg)', color: 'var(--edub-text-primary)', minHeight: 44, boxSizing: 'border-box' };

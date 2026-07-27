@@ -93,7 +93,7 @@ export default function QuizListPage() {
           <Typography variant="h4" sx={{ fontWeight: 800, mb: 1 }}>Quiz</Typography>
           <Typography variant="body2" color="text.secondary">Quản lý bài quiz trắc nghiệm của bạn.</Typography>
         </Box>
-        <Button variant="contained" startIcon={<Plus size={18} />} onClick={() => setCreateDialogOpen(true)} sx={{ minHeight: 44, minWidth: 44, whiteSpace: 'nowrap' }}>
+        <Button variant="contained" startIcon={<Plus size={18} />} onClick={() => setCreateDialogOpen(true)} sx={{ minHeight: 44, minWidth: 44, whiteSpace: 'nowrap', bgcolor: 'var(--btn-add)', '&:hover': { bgcolor: 'var(--btn-add)' } }}>
           Tạo quiz mới
         </Button>
       </Box>
@@ -105,7 +105,7 @@ export default function QuizListPage() {
       {!loading && items.length === 0 && (
         <Box sx={{ border: '1px dashed', borderColor: 'divider', borderRadius: 3, p: { xs: 2, md: 4 }, textAlign: 'center', bgcolor: 'action.hover' }}>
           <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Chưa có quiz nào</Typography>
-          <Button variant="contained" startIcon={<Plus size={18} />} onClick={() => setCreateDialogOpen(true)} sx={{ minHeight: 44 }}>Tạo quiz mới</Button>
+          <Button variant="contained" startIcon={<Plus size={18} />} onClick={() => setCreateDialogOpen(true)} sx={{ minHeight: 44, bgcolor: 'var(--btn-add)', '&:hover': { bgcolor: 'var(--btn-add)' } }}>Tạo quiz mới</Button>
         </Box>
       )}
 
@@ -171,20 +171,20 @@ export default function QuizListPage() {
                           setCopiedId(item.id);
                           setTimeout(() => setCopiedId(null), 2000);
                         }}
-                        sx={{ minHeight: 44 }}
+                        sx={{ minHeight: 44, color: 'var(--btn-view)', borderColor: 'var(--btn-view)', '&:hover': { color: 'var(--btn-view)', borderColor: 'var(--btn-view)' } }}
                       >
                         {copiedId === item.id ? 'Đã copy!' : 'Copy link'}
                       </Button>
                     </>
                   )}
-                  <Box sx={{ display: 'flex', gap: 1 }}>
+                  <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
                     <Button
                       fullWidth
                       size="small"
                       variant="outlined"
                       startIcon={<Pencil size={18} />}
                       onClick={() => navigate(`/lecturer/quiz/${item.id}/edit`)}
-                      sx={{ minHeight: 44 }}
+                      sx={{ minHeight: 44, color: 'var(--btn-update)', borderColor: 'var(--btn-update)', '&:hover': { color: 'var(--btn-update)', borderColor: 'var(--btn-update)' } }}
                     >
                       Quản lý
                     </Button>
@@ -192,12 +192,22 @@ export default function QuizListPage() {
                       fullWidth
                       size="small"
                       variant="outlined"
-                      color="error"
                       startIcon={<Trash2 size={18} />}
                       onClick={() => setDeleteTarget(item)}
-                      sx={{ minHeight: 44 }}
+                      sx={{ minHeight: 44, color: 'var(--btn-delete)', borderColor: 'var(--btn-delete)', '&:hover': { color: 'var(--btn-delete)', borderColor: 'var(--btn-delete)' } }}
                     >
                       Xóa
+                    </Button>
+                    <Button
+                      fullWidth
+                      size="small"
+                      variant="outlined"
+                      startIcon={<Copy size={18} />}
+                      onClick={() => void handleDuplicate(item.id)}
+                      disabled={duplicating === item.id}
+                      sx={{ minHeight: 44, color: 'var(--btn-neutral)', borderColor: 'var(--btn-neutral)', '&:hover': { color: 'var(--btn-neutral)', borderColor: 'var(--btn-neutral)' } }}
+                    >
+                      {duplicating === item.id ? 'Đang nhân bản...' : 'Nhân bản'}
                     </Button>
                   </Box>
                 </Box>
@@ -242,6 +252,7 @@ export default function QuizListPage() {
                             size="small"
                             variant="outlined"
                             startIcon={<Copy size={18} />}
+                            sx={{ color: 'var(--btn-view)', borderColor: 'var(--btn-view)', '&:hover': { color: 'var(--btn-view)', borderColor: 'var(--btn-view)' } }}
                             onClick={async () => {
                               await navigator.clipboard.writeText(`${window.location.origin}/quiz/${item.slug}`);
                               setCopiedId(item.id);
@@ -251,7 +262,7 @@ export default function QuizListPage() {
                             {copiedId === item.id ? 'Đã copy!' : 'Copy link'}
                           </Button>
                         )}
-                        <Button size="small" variant="outlined" startIcon={<Pencil size={18} />} onClick={() => navigate(`/lecturer/quiz/${item.id}/edit`)}>
+                        <Button size="small" variant="outlined" startIcon={<Pencil size={18} />} onClick={() => navigate(`/lecturer/quiz/${item.id}/edit`)} sx={{ color: 'var(--btn-update)', borderColor: 'var(--btn-update)', '&:hover': { color: 'var(--btn-update)', borderColor: 'var(--btn-update)' } }}>
                           Quản lý
                         </Button>
                         <Button
@@ -260,10 +271,11 @@ export default function QuizListPage() {
                           startIcon={<Copy size={18} />}
                           onClick={() => void handleDuplicate(item.id)}
                           disabled={duplicating === item.id}
+                          sx={{ color: 'var(--btn-neutral)', borderColor: 'var(--btn-neutral)', '&:hover': { color: 'var(--btn-neutral)', borderColor: 'var(--btn-neutral)' } }}
                         >
                           {duplicating === item.id ? 'Đang nhân bản...' : 'Nhân bản'}
                         </Button>
-                        <Button size="small" variant="outlined" color="error" startIcon={<Trash2 size={18} />} onClick={() => setDeleteTarget(item)}>
+                        <Button size="small" variant="outlined" startIcon={<Trash2 size={18} />} onClick={() => setDeleteTarget(item)} sx={{ color: 'var(--btn-delete)', borderColor: 'var(--btn-delete)', '&:hover': { color: 'var(--btn-delete)', borderColor: 'var(--btn-delete)' } }}>
                           Xóa
                         </Button>
                       </Box>

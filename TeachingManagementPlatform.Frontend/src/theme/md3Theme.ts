@@ -31,7 +31,7 @@ export function createMd3Theme(mode: ColorMode, primaryColor: string = '#c48a10'
   const isDark = mode === 'dark';
 
   // Derive palette shades from the dynamic primary color
-  const primaryMain = isDark ? lighten(primaryColor, 0.2) : primaryColor;
+  const primaryMain = isDark ? lighten(primaryColor, 0.26) : primaryColor;
   const primaryLight = isDark ? lighten(primaryColor, 0.45) : lighten(primaryColor, 0.3);
   const primaryDark = isDark ? darken(primaryColor, 0.15) : darken(primaryColor, 0.3);
 
@@ -68,21 +68,21 @@ export function createMd3Theme(mode: ColorMode, primaryColor: string = '#c48a10'
         contrastText: suggestTextColor(primaryMain),
       },
       secondary: {
-        main: isDark ? '#9a8455' : '#9b7941',
+        main: isDark ? '#b39a68' : '#9b7941',
         light: isDark ? '#b59f74' : '#c49f64',
         dark: isDark ? '#75633f' : '#6b5228',
       },
       info: {
-        main: isDark ? '#c7a15a' : '#cf8d24',
+        main: isDark ? '#d8b468' : '#cf8d24',
       },
       success: {
-        main: isDark ? '#9ca35f' : '#8a8130',
+        main: isDark ? '#b3bc72' : '#8a8130',
       },
       error: {
-        main: isDark ? '#f08282' : '#ba1a1a',
+        main: isDark ? '#f39191' : '#ba1a1a',
       },
       warning: {
-        main: isDark ? '#d9b15f' : '#d89a1f',
+        main: isDark ? '#e8c06e' : '#d89a1f',
       },
       background: {
         default: isDark ? '#2f2a23' : '#fcf7ef',
@@ -117,7 +117,7 @@ export function createMd3Theme(mode: ColorMode, primaryColor: string = '#c48a10'
       MuiCard: {
         styleOverrides: {
           root: ({ theme }) => ({
-            borderRadius: 24,
+            borderRadius: 16,
             border: `1px solid ${alpha(theme.palette.primary.main, isDark ? 0.2 : 0.16)}`,
             boxShadow: `0 1px 2px ${alpha(theme.palette.common.black, 0.08)}, 0 10px 24px ${alpha(theme.palette.primary.main, isDark ? 0.07 : 0.11)}`,
           }),
@@ -126,7 +126,7 @@ export function createMd3Theme(mode: ColorMode, primaryColor: string = '#c48a10'
       MuiButton: {
         styleOverrides: {
           root: {
-            borderRadius: 999,
+            borderRadius: 12,
             paddingInline: 20,
           },
         },
@@ -134,7 +134,7 @@ export function createMd3Theme(mode: ColorMode, primaryColor: string = '#c48a10'
       MuiOutlinedInput: {
         styleOverrides: {
           root: {
-            borderRadius: 16,
+            borderRadius: 12,
           },
         },
       },

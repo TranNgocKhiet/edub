@@ -115,7 +115,7 @@ export default function CrosswordListPage() {
           variant="contained"
           startIcon={<Plus size={18} />}
           onClick={() => navigate('/lecturer/crossword/new')}
-          sx={{ minHeight: 44, minWidth: 44, whiteSpace: 'nowrap' }}
+          sx={{ minHeight: 44, minWidth: 44, whiteSpace: 'nowrap', bgcolor: 'var(--btn-add)', '&:hover': { bgcolor: 'var(--btn-add)' } }}
         >
           Tạo ô chữ mới
         </Button>
@@ -157,7 +157,7 @@ export default function CrosswordListPage() {
             variant="contained"
             startIcon={<Plus size={18} />}
             onClick={() => navigate('/lecturer/crossword/new')}
-            sx={{ minHeight: 44 }}
+            sx={{ minHeight: 44, bgcolor: 'var(--btn-add)', '&:hover': { bgcolor: 'var(--btn-add)' } }}
           >
             Tạo ô chữ mới
           </Button>
@@ -201,7 +201,7 @@ export default function CrosswordListPage() {
                       )}
                       <Box sx={{ display: 'flex', gap: 1 }}>
                         <Button fullWidth variant="outlined" startIcon={<Pencil size={18} />} onClick={() => navigate(`/lecturer/crossword/${item.id}/edit`)} sx={{ minHeight: 44 }}>Chỉnh sửa</Button>
-                        <Button fullWidth variant="outlined" color="error" startIcon={<Trash2 size={18} />} onClick={() => setDeleteTarget(item)} sx={{ minHeight: 44 }}>Xóa</Button>
+                        <Button fullWidth variant="outlined" className="btn btn-delete" startIcon={<Trash2 size={18} />} onClick={() => setDeleteTarget(item)} sx={{ minHeight: 44 }}>Xóa</Button>
                       </Box>
                     </Box>
                   </CardContent>

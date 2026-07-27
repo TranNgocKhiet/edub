@@ -195,7 +195,7 @@ export default function AccountManagementPage() {
 
   return (
     <Box sx={{ p: { xs: 1.5, md: 2 } }}>
-      <Typography variant="h4" sx={{ fontWeight: 800, mb: 3, color: '#000' }}>
+      <Typography variant="h4" sx={{ fontWeight: 800, mb: 3, color: 'var(--edub-text-primary)' }}>
         Quản lý tài khoản giáo viên
       </Typography>
 
@@ -232,8 +232,8 @@ export default function AccountManagementPage() {
                 <Typography variant="body2">ECoin: {((account.freeEcoinBalance ?? 0) + account.coinBalance).toLocaleString('vi-VN')}</Typography>
                 <Typography variant="body2" sx={{ mb: 1.5 }}>Trạng thái: {account.status === AccountStatus.Active ? 'Hoạt động' : 'Vô hiệu hóa'}</Typography>
                 <Box sx={{ display: 'flex', gap: 1 }}>
-                  <Button fullWidth variant="outlined" onClick={() => openEditModal(account)} disabled={actionLoading} sx={{ minHeight: 44 }}>Sửa</Button>
-                  <Button fullWidth variant="outlined" color="error" onClick={() => setDeleteTarget(account)} disabled={actionLoading} sx={{ minHeight: 44 }}>Xóa</Button>
+                  <Button fullWidth variant="outlined" className="btn btn-update" onClick={() => openEditModal(account)} disabled={actionLoading} sx={{ minHeight: 44 }}>Sửa</Button>
+                  <Button fullWidth variant="outlined" className="btn btn-delete" onClick={() => setDeleteTarget(account)} disabled={actionLoading} sx={{ minHeight: 44 }}>Xóa</Button>
                 </Box>
               </CardContent></Card>
             ))}

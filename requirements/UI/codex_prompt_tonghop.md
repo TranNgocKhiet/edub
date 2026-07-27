@@ -68,19 +68,21 @@ ECoin" (trang ví ECoin) đang có border-radius khác nhau:
 - "Nâng cấp tài khoản": bo góc rất lớn, dạng pill (gần full-rounded).
 - "Mua ECoin": bo góc nhỏ, gần vuông.
 
-**Yêu cầu (Option B — giữ style pill của "Nâng cấp tài khoản"):**
-- Áp dụng border-radius dạng pill (hoặc token tương đương, ví dụ `rounded-[32px]` hay
-  `rounded-full` tùy chiều cao component thực tế) cho CẢ HAI header, ở CẢ admin view lẫn
-  user view (nếu 2 view có style riêng cho các trang này).
+**Yêu cầu (Option A — bo góc vừa phải, không pill quá đà):**
+- Chuẩn hóa cả 2 header về cùng 1 giá trị border-radius vừa phải (ví dụ `rounded-2xl`,
+  tương đương `border-radius: 16–20px`), KHÔNG dùng dạng pill/full-rounded như hiện tại
+  của "Nâng cấp tài khoản".
+- Áp dụng đồng nhất cho CẢ HAI header, ở CẢ admin view lẫn user view (nếu 2 view có style
+  riêng cho các trang này).
 - Tạo 1 token/class dùng chung (ví dụ `--banner-radius` hoặc `.page-header-banner`) để cả
   2 component tham chiếu cùng 1 nguồn, tránh lệch lại về sau khi sửa 1 trong 2 chỗ.
 
 **Việc cần làm:**
 - Tìm file/component render header "Nâng cấp tài khoản" và "Mua ECoin" (kiểm tra cả bản
   admin và bản user nếu có tách riêng).
-- Lấy giá trị border-radius hiện tại của "Nâng cấp tài khoản" làm chuẩn.
-- Áp giá trị đó cho "Mua ECoin", đồng thời gộp về 1 token/class dùng chung cho cả 2, ở cả
-  2 view.
+- Giảm border-radius của "Nâng cấp tài khoản" từ dạng pill xuống mức vừa phải
+  (`rounded-2xl` / 16–20px).
+- Áp cùng giá trị đó cho "Mua ECoin", gộp về 1 token/class dùng chung cho cả 2, ở cả 2 view.
 
 ---
 

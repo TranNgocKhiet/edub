@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { AxiosError } from 'axios';
+import { Box } from '@mui/material';
 import type { ApiError } from '../../types/common';
 import * as lecturerService from '../../services/lecturerCurriculumTemplateService';
 import type { CurriculumTemplate } from '../../types/curriculumTemplate';
@@ -196,6 +197,30 @@ export default function CurriculumTemplatePage() {
           Không tìm thấy mẫu giáo án nào. Thử thay đổi bộ lọc hoặc tạo mẫu mới.
         </div>
       ) : (
+        <>
+        <Box sx={{ display: { xs: 'grid', md: 'none' }, gap: 2 }}>
+          {templates.map((tpl) => {
+            const category = getTemplateCategory(tpl, currentUserId);
+            const badge = getCategoryBadge(category);
+            const isMine = category === 'mine';
+            return (
+              <Box key={tpl.id} sx={{ p: 2, border: '1px solid var(--edub-border)', borderRadius: 'var(--edub-banner-radius)', backgroundColor: 'var(--edub-surface)' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1, alignItems: 'flex-start', mb: 1.5 }}>
+                  <strong>{tpl.subject} - Lớp {tpl.grade}</strong>
+                  <span style={badge.style}>{badge.label}</span>
+                </Box>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1, alignItems: 'center', mb: 1.5, color: 'var(--edub-text-secondary)', fontSize: 14 }}>
+                  <span>{tpl.lessonCount} bài học</span>
+                  {isMine ? <label style={switchLabelStyle}><input type="checkbox" checked={tpl.isPublic} onChange={() => handleTogglePublic(tpl)} disabled={actionLoading} style={switchInputStyle} /><span style={tpl.isPublic ? switchTrackOnStyle : switchTrackOffStyle}><span style={tpl.isPublic ? switchThumbOnStyle : switchThumbOffStyle} /></span></label> : <span>Chỉ xem</span>}
+                </Box>
+                <div style={{ ...actionButtonsStyle, display: 'grid', gridTemplateColumns: isMine ? '1fr 1fr' : '1fr' }}>
+                  {isMine ? <><button type="button" onClick={() => openEditDialog(tpl)} disabled={actionLoading} className="btn btn-update" style={{ ...actionBtnStyle, minHeight: 44 }}>Sửa</button><button type="button" onClick={() => setDeleteTarget(tpl)} disabled={actionLoading} className="btn btn-delete" style={{ ...actionBtnStyle, minHeight: 44 }}>Xóa</button></> : <button type="button" onClick={() => openViewDialog(tpl)} className="btn btn-view" style={{ ...actionBtnStyle, minHeight: 44 }}>Xem</button>}
+                </div>
+              </Box>
+            );
+          })}
+        </Box>
+        <Box sx={{ display: { xs: 'none', md: 'block' } }}>
         <div style={tableShellStyle}>
           <table style={tableStyle}>
             <thead>
@@ -281,6 +306,8 @@ export default function CurriculumTemplatePage() {
             </tbody>
           </table>
         </div>
+        </Box>
+        </>
       )}
 
       {/* Delete Confirmation */}
@@ -359,7 +386,7 @@ const heroStyle: React.CSSProperties = {
   marginBottom: 20,
   padding: 24,
   borderRadius: 20,
-  background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+  background: 'var(--edub-header-background)',
   color: '#fff',
   boxShadow: '0 18px 40px rgba(15, 23, 42, 0.16)',
 };

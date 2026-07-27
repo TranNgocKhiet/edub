@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import { AxiosError } from 'axios';
 import { Box } from '@mui/material';
-import { Pencil, Trash2 } from 'lucide-react';
 import type {
   SubscriptionPackage,
   CreateSubscriptionPackageRequest,
@@ -281,6 +280,33 @@ export default function SubscriptionPackagePage() {
         <div style={emptyStateStyle}>Chưa có gói đăng ký nào. Tạo gói mặc định miễn phí để bắt đầu.</div>
       ) : (
         <>
+          <Box sx={{ display: { xs: 'grid', md: 'none' }, gap: 2 }}>
+            {paginatedItems.map((pkg) => (
+              <Box key={pkg.id} sx={{ p: 2, border: '1px solid var(--edub-border)', borderRadius: 'var(--edub-banner-radius)', backgroundColor: 'var(--edub-surface)' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 1, alignItems: 'flex-start', mb: 1.5 }}>
+                  <Box>
+                    <strong>{pkg.name}</strong>
+                    {pkg.isDefault && <span style={{ ...defaultBadgeStyle, marginLeft: 8 }}>Mặc định</span>}
+                  </Box>
+                  <span style={pkg.isActive ? activeBadgeStyle : inactiveBadgeStyle}>{pkg.isActive ? 'Đang mở bán' : 'Tạm ẩn'}</span>
+                </Box>
+                <div style={{ fontWeight: 700, marginBottom: 12 }}>{formatCurrency(pkg.price)}</div>
+                <div style={{ ...limitStackStyle, marginBottom: 12 }}>
+                  <span>{formatStorageLimit(pkg.storageLimitBytes)}</span>
+                  {pkg.unlockedFeatures.includes('quiz_generator') && <><span style={limitMetaStyle}>{pkg.maxFilesPerQuizGeneration} file / lần tạo quiz</span><span style={limitMetaStyle}>{pkg.maxQuestionsPerQuiz} câu hỏi tối đa</span></>}
+                  {pkg.unlockedFeatures.includes('crossword_generator') && <><span style={limitMetaStyle}>{pkg.maxCrosswordFilesPerGeneration} file / lần tạo ô chữ</span><span style={limitMetaStyle}>{pkg.maxCrosswordWordsPerGeneration} từ / ô chữ</span><span style={limitMetaStyle}>{pkg.maxCrosswordGenerationsPerDay} lần tạo ô chữ / ngày</span></>}
+                </div>
+                <div style={{ ...featureStackStyle, marginBottom: 16 }}>
+                  {pkg.unlockedFeatures.length > 0 ? pkg.unlockedFeatures.map((key) => <span key={key} style={featureChipStyle}>{featureLabel(key)}</span>) : <span style={mutedTextStyle}>Không có</span>}
+                </div>
+                <div style={{ ...actionButtonsStyle, display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
+                  <button type="button" onClick={() => openEditModal(pkg)} disabled={actionLoading} className="btn btn-update" style={{ minHeight: 44 }}>Sửa</button>
+                  <button type="button" onClick={() => setDeleteTarget(pkg)} disabled={actionLoading || pkg.isDefault} className="btn btn-delete" style={{ minHeight: 44 }}>{pkg.isDefault ? 'Không xóa' : 'Xóa'}</button>
+                </div>
+              </Box>
+            ))}
+          </Box>
+          <Box sx={{ display: { xs: 'none', md: 'block' } }}>
           <div style={tableShellStyle}>
             <table style={tableStyle}>
             <thead>
@@ -335,8 +361,12 @@ export default function SubscriptionPackagePage() {
                   </td>
                   <td style={tdStyle}>
                     <div style={actionButtonsStyle}>
-                      <button type="button" onClick={() => openEditModal(pkg)} title="Sửa" style={{ background: 'none', border: 'none', cursor: 'pointer', width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Pencil size={18} /></button>
-                      {!pkg.isDefault && <button type="button" onClick={() => setDeleteTarget(pkg)} title="Xóa" style={{ background: 'none', border: 'none', cursor: 'pointer', width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Trash2 size={18} /></button>}
+                      <button type="button" onClick={() => openEditModal(pkg)} disabled={actionLoading} className="btn btn-update" style={{ minHeight: 44 }}>
+                        Sửa
+                      </button>
+                      <button type="button" onClick={() => setDeleteTarget(pkg)} disabled={actionLoading || pkg.isDefault} className="btn btn-delete" style={{ minHeight: 44 }}>
+                        {pkg.isDefault ? 'Không xóa' : 'Xóa'}
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -344,6 +374,7 @@ export default function SubscriptionPackagePage() {
               </tbody>
             </table>
           </div>
+          </Box>
           <Pagination totalItems={totalItems} currentPage={currentPage} pageSize={pageSize} onPageChange={setCurrentPage} onPageSizeChange={setPageSize} />
         </>
       )}
@@ -560,16 +591,16 @@ const eyebrowStyle: CSSProperties = { margin: 0, fontSize: 12, letterSpacing: 1.
 const titleStyle: CSSProperties = { margin: '10px 0 12px', fontSize: 36, lineHeight: 1.1 };
 const subtitleStyle: CSSProperties = { margin: 0, maxWidth: 760, fontSize: 15, lineHeight: 1.7, color: 'rgba(255,255,255,0.82)' };
 const alertErrorStyle: CSSProperties = { padding: '12px 14px', marginBottom: 16, borderRadius: 14, backgroundColor: '#fff1f1', border: '1px solid #f1b7b7', color: '#b42318' };
-const emptyStateStyle: CSSProperties = { padding: 28, borderRadius: 18, backgroundColor: '#fff', border: '1px dashed #d9e2ec', color: '#4b5563' };
+const emptyStateStyle: CSSProperties = { padding: 28, borderRadius: 18, backgroundColor: 'var(--edub-surface-muted)', border: '1px dashed var(--edub-border)', color: 'var(--edub-text-secondary)' };
 const tableShellStyle: CSSProperties = { overflowX: 'auto', overflowY: 'hidden', borderRadius: 'var(--edub-banner-radius)', border: '1px solid var(--edub-table-border)', backgroundColor: 'var(--edub-surface)', boxShadow: '0 8px 24px rgba(15, 23, 42, 0.06)' };
 const tableStyle: CSSProperties = { width: '100%', borderCollapse: 'collapse' };
 const thStyle: CSSProperties = { textAlign: 'left', padding: '14px 16px', borderBottom: '1px solid var(--edub-table-border)', fontSize: 13, textTransform: 'uppercase', letterSpacing: 0.7, color: 'var(--edub-table-header-text)', backgroundColor: 'var(--edub-table-header-bg)' };
-const tdStyle: CSSProperties = { padding: '14px 16px', borderBottom: '1px solid #eef2f7', verticalAlign: 'top' };
+const tdStyle: CSSProperties = { padding: '14px 16px', borderBottom: '1px solid var(--edub-table-border)', verticalAlign: 'top' };
 const limitStackStyle: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 6 };
-const limitMetaStyle: CSSProperties = { fontSize: 13, color: '#6b7280' };
+const limitMetaStyle: CSSProperties = { fontSize: 13, color: 'var(--edub-text-secondary)' };
 const featureStackStyle: CSSProperties = { display: 'flex', flexWrap: 'wrap', gap: 8 };
 const featureChipStyle: CSSProperties = { display: 'inline-flex', alignItems: 'center', padding: '6px 10px', borderRadius: 999, backgroundColor: '#edf7f1', color: '#1f7a4d', fontSize: 12, fontWeight: 600 };
-const mutedTextStyle: CSSProperties = { color: '#9ca3af', fontSize: 13 };
+const mutedTextStyle: CSSProperties = { color: 'var(--edub-text-secondary)', fontSize: 13 };
 const defaultBadgeStyle: CSSProperties = { display: 'inline-flex', width: 'fit-content', padding: '4px 10px', borderRadius: 999, backgroundColor: '#e3f2fd', color: '#d49a00', fontSize: 12, fontWeight: 600 };
 const activeBadgeStyle: CSSProperties = { display: 'inline-flex', padding: '6px 10px', borderRadius: 999, backgroundColor: '#e8f5e9', color: '#2e7d32', fontSize: 12, fontWeight: 600 };
 const inactiveBadgeStyle: CSSProperties = { display: 'inline-flex', padding: '6px 10px', borderRadius: 999, backgroundColor: '#fff8e1', color: '#8d6e63', fontSize: 12, fontWeight: 600 };

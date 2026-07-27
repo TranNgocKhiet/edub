@@ -8,8 +8,11 @@
   --edub-input-bg: #ffffff;
   --edub-input-border: rgba(86, 70, 41, 0.35);
   --edub-link: #1565c0;
+  --primary-color: #c48a10;
+  --edub-header-background: linear-gradient(135deg, color-mix(in srgb, var(--primary-color) 34%, #0f172a) 0%, color-mix(in srgb, var(--primary-color) 18%, #1e293b) 100%);
   --edub-hover: rgba(196, 138, 16, 0.1);
-  --edub-banner-radius: 20px;
+  /* Shared surface contract for every page-level banner. */
+  --edub-banner-radius: 18px;
   --edub-table-border: #e2e8f0;
   --edub-table-header-bg: #f8fafc;
   --edub-table-header-text: #475569;
@@ -18,6 +21,7 @@
   --btn-update: #d7b34b;
   --btn-delete: #ba1a1a;
   --btn-neutral: #d2dae6;
+  --edub-action-neutral: #52657b;
 }
 
 :root[data-color-mode="dark"] {
@@ -30,10 +34,60 @@
   --edub-input-bg: #3f3931;
   --edub-input-border: rgba(255, 255, 255, 0.3);
   --edub-link: #7cb7ff;
+  --edub-header-background: linear-gradient(135deg, color-mix(in srgb, var(--primary-color) 30%, #0f172a) 0%, color-mix(in srgb, var(--primary-color) 15%, #1e293b) 100%);
   --edub-hover: rgba(255, 255, 255, 0.06);
   --edub-table-border: rgba(232, 216, 186, 0.24);
   --edub-table-header-bg: #433c33;
   --edub-table-header-text: #f4ebdb;
+  /* Brighter semantic controls retain their identity without using the user-selected primary colour. */
+  --btn-add: #82c987;
+  --btn-view: #82c1ff;
+  --btn-update: #f0c85a;
+  --btn-delete: #ef6b6b;
+  --btn-neutral: #c5cfdd;
+  --edub-action-neutral: #c5cfdd;
+}
+
+.page-header-banner {
+  border-radius: var(--edub-banner-radius) !important;
+  background: var(--edub-header-background) !important;
+  color: #fff;
+  overflow: hidden;
+}
+
+.page-header-banner :is(h1, h2, h3, p) {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+/* Legacy inline text styles still exist in feature pages. Keep their contrast
+   correct until each page is migrated to the shared text tokens. */
+:root[data-color-mode="dark"] [style*="color: rgb(0, 0, 0)"],
+:root[data-color-mode="dark"] [style*="color: rgb(15, 23, 42)"],
+:root[data-color-mode="dark"] [style*="color: rgb(31, 41, 55)"],
+:root[data-color-mode="dark"] [style*="color: rgb(51, 65, 85)"] {
+  color: var(--edub-text-primary) !important;
+}
+
+:root[data-color-mode="dark"] [style*="color: rgb(71, 85, 105)"],
+:root[data-color-mode="dark"] [style*="color: rgb(75, 85, 99)"],
+:root[data-color-mode="dark"] [style*="color: rgb(100, 116, 139)"],
+:root[data-color-mode="dark"] [style*="color: rgb(107, 114, 128)"] {
+  color: var(--edub-text-secondary) !important;
+}
+
+/* React serialises inline hex colours to rgb(), but a few native style strings
+   remain. These fallbacks prevent low-contrast legacy labels in dark mode. */
+:root[data-color-mode="dark"] [style*="color: #0f172a"],
+:root[data-color-mode="dark"] [style*="color: #1f2937"],
+:root[data-color-mode="dark"] [style*="color: #334155"] {
+  color: var(--edub-text-primary) !important;
+}
+
+:root[data-color-mode="dark"] [style*="color: #475569"],
+:root[data-color-mode="dark"] [style*="color: #64748b"],
+:root[data-color-mode="dark"] [style*="color: #6b7280"] {
+  color: var(--edub-text-secondary) !important;
 }
 
 * {
@@ -46,7 +100,8 @@
 
 .btn {
   border: 0;
-  border-radius: 999px;
+  border-radius: 12px;
+  min-height: 44px;
   padding: 10px 18px;
   font:
     600 0.875rem/1.2 "Roboto Flex",
@@ -74,68 +129,68 @@
 
 .btn-add,
 .btn-save {
-  color: #ffffff;
-  background: var(--btn-add);
+  color: #ffffff !important;
+  background: var(--btn-add) !important;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.14),
     0 1px 3px rgba(46, 125, 50, 0.28);
 }
 
 .btn-view {
-  color: #ffffff;
-  background: var(--btn-view);
+  color: #ffffff !important;
+  background: var(--btn-view) !important;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.14),
     0 1px 3px rgba(21, 101, 192, 0.3);
 }
 
 .btn-update {
-  color: #2a2008;
-  background: var(--btn-update);
+  color: #2a2008 !important;
+  background: var(--btn-update) !important;
 }
 
 .btn-neutral,
 .btn-cancel {
-  color: #1f2a39;
-  background: var(--btn-neutral);
+  color: #1f2a39 !important;
+  background: var(--btn-neutral) !important;
 }
 
 .btn-delete {
-  color: #ffffff;
-  background: var(--btn-delete);
+  color: #ffffff !important;
+  background: var(--btn-delete) !important;
 }
 
 :root[data-color-mode="dark"] .btn-add,
 :root[data-color-mode="dark"] .btn-save {
-  color: #112014;
-  background: #74c27a;
+  color: #112014 !important;
+  background: var(--btn-add) !important;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.22),
     0 1px 3px rgba(116, 194, 122, 0.28);
 }
 
 :root[data-color-mode="dark"] .btn-view {
-  color: #0c2236;
-  background: #7cb7ff;
+  color: #0c2236 !important;
+  background: var(--btn-view) !important;
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.22),
     0 1px 3px rgba(124, 183, 255, 0.3);
 }
 
 :root[data-color-mode="dark"] .btn-update {
-  color: #2b230b;
-  background: #f0c85a;
+  color: #2b230b !important;
+  background: var(--btn-update) !important;
 }
 
 :root[data-color-mode="dark"] .btn-neutral,
 :root[data-color-mode="dark"] .btn-cancel {
-  color: #f3f6fa;
-  background: #616c7d;
+  color: #1f2a39 !important;
+  background: var(--btn-neutral) !important;
 }
 
 :root[data-color-mode="dark"] .btn-delete {
-  color: #2b0d0d;
-  background: #ef5350;
+  color: #2b0d0d !important;
+  background: var(--btn-delete) !important;
 }
 
 table {

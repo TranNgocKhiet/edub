@@ -108,7 +108,7 @@ export default function SubscriptionPage() {
 
   return (
     <Box sx={{ ...pageStyle, p: { xs: 1.5, sm: 2, md: 3 } }}>
-      <Box sx={{ ...heroStyle, p: { xs: 2, sm: 2.5, md: 3 }, mb: { xs: 2, md: 3 }, borderRadius: { xs: 3, md: 5 }, overflow: 'hidden' }}>
+      <Box className="page-header-banner" sx={{ ...heroStyle, p: { xs: 2, sm: 2.5, md: 3 }, mb: { xs: 2, md: 3 } }}>
         <div>
           <p style={eyebrowStyle}>Gói đăng ký</p>
           <Box component="h1" sx={{ ...titleStyle, fontSize: { xs: 28, md: 36 }, lineHeight: { xs: 1.2, md: 1.1 }, overflowWrap: 'anywhere' }}>Nâng cấp tài khoản</Box>
@@ -147,7 +147,7 @@ export default function SubscriptionPage() {
               aria-label={`Gói ${pkg.name}`}
               sx={{
                 ...cardStyle,
-                border: isCurrentPlan ? '2px solid #1976d2' : '1px solid #e2e8f0',
+                border: isCurrentPlan ? '2px solid var(--primary-color)' : '1px solid var(--edub-border)',
                 borderRadius: '16px !important',
                 display: 'flex',
                 flexDirection: 'column',
@@ -201,7 +201,7 @@ export default function SubscriptionPage() {
                   </>
                 )}
                 {pkg.unlockedFeatures.length === 0 && (
-                  <li style={{ color: '#64748b' }}>Không có chức năng mở khóa</li>
+                  <li style={{ color: 'var(--edub-text-secondary)' }}>Không có chức năng mở khóa</li>
                 )}
               </ul>
 
@@ -234,20 +234,20 @@ export default function SubscriptionPage() {
 }
 
 const pageStyle: React.CSSProperties = {};
-const heroStyle: React.CSSProperties = { marginBottom: 24, padding: 24, borderRadius: 20, background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)', color: '#fff' };
+const heroStyle: React.CSSProperties = { marginBottom: 24, padding: 24, borderRadius: 'var(--edub-banner-radius)', background: 'var(--edub-header-background)', color: '#fff' };
 const eyebrowStyle: React.CSSProperties = { margin: 0, textTransform: 'uppercase', letterSpacing: '0.14em', fontSize: 12, color: 'rgba(255,255,255,0.72)' };
 const titleStyle: React.CSSProperties = { margin: '8px 0 8px' };
 const subtitleStyle: React.CSSProperties = { margin: 0, maxWidth: 760, lineHeight: 1.6, color: 'rgba(255,255,255,0.8)' };
 const alertStyle: React.CSSProperties = { marginBottom: 16, padding: 12, borderRadius: 12, backgroundColor: '#fff1f2', border: '1px solid #fecdd3', color: '#9f1239' };
 const successStyle: React.CSSProperties = { marginBottom: 16, padding: 12, borderRadius: 12, backgroundColor: '#ecfdf5', border: '1px solid #a7f3d0', color: '#065f46' };
-const emptyStateStyle: React.CSSProperties = { padding: 24, borderRadius: 16, border: '1px dashed #cbd5e1', backgroundColor: '#f8fafc', color: '#475569', textAlign: 'center' };
+const emptyStateStyle: React.CSSProperties = { padding: 24, borderRadius: 16, border: '1px dashed var(--edub-border)', backgroundColor: 'var(--edub-surface-muted)', color: 'var(--edub-text-secondary)', textAlign: 'center' };
 const gridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 };
-const cardStyle: React.CSSProperties = { padding: 24, borderRadius: 16, backgroundColor: '#fff', border: '1px solid #e2e8f0', boxShadow: '0 10px 30px rgba(15, 23, 42, 0.06)', overflow: 'hidden', position: 'relative' };
+const cardStyle: React.CSSProperties = { padding: 24, borderRadius: 16, backgroundColor: 'var(--edub-surface)', border: '1px solid var(--edub-border)', boxShadow: '0 10px 30px rgba(15, 23, 42, 0.06)', overflow: 'hidden', position: 'relative' };
 const cardHeaderStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8, marginBottom: 16 };
 const cardTitleStyle: React.CSSProperties = { margin: 0, fontSize: 20, lineHeight: 1.25, overflowWrap: 'anywhere' };
 const defaultBadge: React.CSSProperties = { padding: '4px 10px', borderRadius: 999, backgroundColor: '#e3f2fd', color: '#1565c0', fontSize: 12, fontWeight: 600 };
 const priceRowStyle: React.CSSProperties = { marginBottom: 16 };
 const priceValueStyle: React.CSSProperties = { fontSize: 24, color: 'var(--edub-text-primary)' };
 const featureListStyle: React.CSSProperties = { listStyle: 'none', padding: 0, margin: '0 0 16px', display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14 };
-const limitStyle: React.CSSProperties = { color: '#64748b', paddingLeft: 16 };
+const limitStyle: React.CSSProperties = { color: 'var(--edub-text-secondary)', paddingLeft: 16 };
 const ctaStyle: React.CSSProperties = { width: '100%', minHeight: 44, margin: 0 };

@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { AxiosError } from 'axios';
 import { Box, Button, Card, CardContent, CircularProgress, Typography } from '@mui/material';
-import { Pencil, Trash2 } from 'lucide-react';
 import type { ApiError } from '../../types/common';
 import type { CoinPackage, CreateCoinPackageRequest, UpdateCoinPackageRequest } from '../../types/coin';
 import * as coinService from '../../services/coinService';
@@ -195,6 +194,7 @@ export default function CoinPackagePage() {
   return (
     <Box sx={{ p: { xs: 1.5, md: 2 }, background: 'var(--edub-surface)' }}>
       <Box
+        className="page-header-banner"
         sx={{
           display: 'flex',
           flexDirection: { xs: 'column', md: 'row' },
@@ -203,8 +203,6 @@ export default function CoinPackagePage() {
           alignItems: { xs: 'stretch', md: 'flex-start' },
           mb: 2.5,
           p: { xs: 2, md: 3 },
-          borderRadius: 2.5,
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
           color: '#fff',
           boxShadow: '0 18px 40px rgba(15, 23, 42, 0.16)',
         }}
@@ -257,7 +255,7 @@ export default function CoinPackagePage() {
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>{pkg.name}</Typography>
                 <Typography variant="body2">{formatCurrency(pkg.price)} · {pkg.coinAmount.toLocaleString('vi-VN')} ECoin</Typography>
                 <Typography variant="body2" color="text.secondary" sx={{ my: 1 }}>{pkg.description || '—'}</Typography>
-                <Box sx={{ display: 'flex', gap: 1 }}><Button fullWidth variant="outlined" onClick={() => openEditModal(pkg)} disabled={actionLoading} sx={{ minHeight: 44 }}>Sửa</Button><Button fullWidth variant="outlined" color="error" onClick={() => setDeleteTarget(pkg)} disabled={actionLoading} sx={{ minHeight: 44 }}>Xóa</Button></Box>
+                <Box sx={{ display: 'flex', gap: 1 }}><Button fullWidth variant="outlined" className="btn btn-update" onClick={() => openEditModal(pkg)} disabled={actionLoading} sx={{ minHeight: 44 }}>Sửa</Button><Button fullWidth variant="outlined" className="btn btn-delete" onClick={() => setDeleteTarget(pkg)} disabled={actionLoading} sx={{ minHeight: 44 }}>Xóa</Button></Box>
               </CardContent></Card>
             ))}
           </Box>
@@ -284,8 +282,12 @@ export default function CoinPackagePage() {
                     <td style={tdStyle}>{pkg.isActive ? 'Đang mở bán' : 'Tạm ẩn'}</td>
                     <td style={tdStyle}>
                       <div style={actionButtonsStyle}>
-                        <button type="button" onClick={() => openEditModal(pkg)} title="Sửa" style={{ background: 'none', border: 'none', cursor: 'pointer', width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Pencil size={18} /></button>
-                        <button type="button" onClick={() => setDeleteTarget(pkg)} title="Xóa" style={{ background: 'none', border: 'none', cursor: 'pointer', width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Trash2 size={18} /></button>
+                        <button type="button" onClick={() => openEditModal(pkg)} disabled={actionLoading} className="btn btn-update" style={{ minHeight: 44 }}>
+                          Sửa
+                        </button>
+                        <button type="button" onClick={() => setDeleteTarget(pkg)} disabled={actionLoading} className="btn btn-delete" style={{ minHeight: 44 }}>
+                          Xóa
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -508,8 +510,17 @@ const inputStyle: React.CSSProperties = {
   boxSizing: 'border-box',
 };
 
-const tableShellStyle: React.CSSProperties = { overflowX: 'auto' };
+const tableShellStyle: React.CSSProperties = {
+  overflowX: 'auto',
+  overflowY: 'hidden',
+  borderRadius: 'var(--edub-banner-radius)',
+  border: '1px solid var(--edub-table-border)',
+  backgroundColor: 'var(--edub-surface)',
+};
 const tableStyle: React.CSSProperties = { width: '100%', borderCollapse: 'collapse' };
-const thStyle: React.CSSProperties = { textAlign: 'left', padding: '12px', borderBottom: '2px solid #e2e8f0' };
-const tdStyle: React.CSSProperties = { padding: '12px', borderBottom: '1px solid #e2e8f0' };
+const thStyle: React.CSSProperties = {
+  textAlign: 'left', padding: '12px', borderBottom: '1px solid var(--edub-table-border)',
+  backgroundColor: 'var(--edub-table-header-bg)', color: 'var(--edub-table-header-text)',
+};
+const tdStyle: React.CSSProperties = { padding: '12px', borderBottom: '1px solid var(--edub-table-border)' };
 const actionButtonsStyle: React.CSSProperties = { display: 'flex', gap: 8, flexWrap: 'wrap' };
