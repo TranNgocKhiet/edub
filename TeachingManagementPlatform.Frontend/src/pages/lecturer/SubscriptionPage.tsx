@@ -160,7 +160,7 @@ export default function SubscriptionPage() {
                 pt: { xs: 2.5, md: 3 },
               }}
             >
-              <Box sx={cardHeaderStyle}>
+              <Box sx={{ ...cardHeaderStyle, minHeight: { xs: 'auto', md: '72px' } }}>
                 <h2 style={cardTitleStyle}>{pkg.name}</h2>
                 {(pkg.isDefault || isCurrentPlan) && (
                   <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.75, minHeight: 24 }}>
@@ -243,7 +243,7 @@ const successStyle: React.CSSProperties = { marginBottom: 16, padding: 12, borde
 const emptyStateStyle: React.CSSProperties = { padding: 24, borderRadius: 16, border: '1px dashed var(--edub-border)', backgroundColor: 'var(--edub-surface-muted)', color: 'var(--edub-text-secondary)', textAlign: 'center' };
 const gridStyle: React.CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 20 };
 const cardStyle: React.CSSProperties = { padding: 24, borderRadius: 16, backgroundColor: 'var(--edub-surface)', border: '1px solid var(--edub-border)', boxShadow: '0 10px 30px rgba(15, 23, 42, 0.06)', overflow: 'hidden', position: 'relative' };
-const cardHeaderStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 8, marginBottom: 16 };
+const cardHeaderStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '8px', marginBottom: '16px' };
 const cardTitleStyle: React.CSSProperties = { margin: 0, fontSize: 20, lineHeight: 1.25, overflowWrap: 'anywhere' };
 const defaultBadge: React.CSSProperties = { padding: '4px 10px', borderRadius: 999, backgroundColor: '#e3f2fd', color: '#1565c0', fontSize: 12, fontWeight: 600 };
 const priceRowStyle: React.CSSProperties = { marginBottom: 16 };
