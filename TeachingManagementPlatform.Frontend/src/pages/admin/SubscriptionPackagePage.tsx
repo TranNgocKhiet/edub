@@ -335,8 +335,8 @@ export default function SubscriptionPackagePage() {
                   </td>
                   <td style={tdStyle}>
                     <div style={actionButtonsStyle}>
-                      <button type="button" onClick={() => openEditModal(pkg)} title="Sửa" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'inline-flex', alignItems: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Pencil size={18} /></button>
-                      {!pkg.isDefault && <button type="button" onClick={() => setDeleteTarget(pkg)} title="Xóa" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'inline-flex', alignItems: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Trash2 size={18} /></button>}
+                      <button type="button" onClick={() => openEditModal(pkg)} title="Sửa" style={{ background: 'none', border: 'none', cursor: 'pointer', width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Pencil size={18} /></button>
+                      {!pkg.isDefault && <button type="button" onClick={() => setDeleteTarget(pkg)} title="Xóa" style={{ background: 'none', border: 'none', cursor: 'pointer', width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Trash2 size={18} /></button>}
                     </div>
                   </td>
                 </tr>
@@ -550,7 +550,7 @@ function checkboxCardStyle(checked: boolean): CSSProperties {
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
-const pageStyle: CSSProperties = { background: 'linear-gradient(180deg, #f8fbff 0%, #ffffff 100%)' };
+const pageStyle: CSSProperties = { background: 'var(--edub-surface)' };
 const heroActionsStyle: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 16, minWidth: 240 };
 const statsGridStyle: CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 };
 const statCardStyle: CSSProperties = { backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 16, padding: 14, display: 'flex', flexDirection: 'column', gap: 4, textAlign: 'center' };

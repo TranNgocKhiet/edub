@@ -297,8 +297,8 @@ export default function ScoreTemplateManager() {
                     </td>
                     <td style={tdStyle}>
                       <div style={actionButtonsStyle}>
-                        <button type="button" onClick={() => openEditModal(tpl)} title="Sửa" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'inline-flex', alignItems: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Pencil size={18} /></button>
-                        <button type="button" onClick={() => setDeleteTarget(tpl)} title="Xóa" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'inline-flex', alignItems: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Trash2 size={18} /></button>
+                        <button type="button" onClick={() => openEditModal(tpl)} title="Sửa" style={{ background: 'none', border: 'none', cursor: 'pointer', width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Pencil size={18} /></button>
+                        <button type="button" onClick={() => setDeleteTarget(tpl)} title="Xóa" style={{ background: 'none', border: 'none', cursor: 'pointer', width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Trash2 size={18} /></button>
                       </div>
                     </td>
                   </tr>
@@ -508,7 +508,7 @@ function Field({ label, error, children }: { label: string; error?: string; chil
 // ─── Styles ──────────────────────────────────────────────────────
 
 const pageStyle: React.CSSProperties = {
-  background: 'linear-gradient(180deg, #f8fbff 0%, #ffffff 100%)',
+  background: 'var(--edub-surface)',
 };
 
 const heroStyle: React.CSSProperties = {

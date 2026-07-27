@@ -93,7 +93,7 @@ export default function QuizListPage() {
           <Typography variant="h4" sx={{ fontWeight: 800, mb: 1 }}>Quiz</Typography>
           <Typography variant="body2" color="text.secondary">Quản lý bài quiz trắc nghiệm của bạn.</Typography>
         </Box>
-        <Button variant="contained" startIcon={<Plus size={18} />} onClick={() => setCreateDialogOpen(true)}>
+        <Button variant="contained" startIcon={<Plus size={18} />} onClick={() => setCreateDialogOpen(true)} sx={{ minHeight: 44, minWidth: 44, whiteSpace: 'nowrap' }}>
           Tạo quiz mới
         </Button>
       </Box>
@@ -105,7 +105,7 @@ export default function QuizListPage() {
       {!loading && items.length === 0 && (
         <Box sx={{ border: '1px dashed', borderColor: 'divider', borderRadius: 3, p: { xs: 2, md: 4 }, textAlign: 'center', bgcolor: 'action.hover' }}>
           <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Chưa có quiz nào</Typography>
-          <Button variant="contained" startIcon={<Plus size={18} />} onClick={() => setCreateDialogOpen(true)}>Tạo quiz mới</Button>
+          <Button variant="contained" startIcon={<Plus size={18} />} onClick={() => setCreateDialogOpen(true)} sx={{ minHeight: 44 }}>Tạo quiz mới</Button>
         </Box>
       )}
 
@@ -210,7 +210,7 @@ export default function QuizListPage() {
       {/* Desktop Table View */}
       {!loading && items.length > 0 && (
         <>
-          <TableContainer component={Paper} variant="outlined">
+          <TableContainer component={Paper} variant="outlined" sx={{ display: { xs: 'none', md: 'block' } }}>
             <Table>
               <TableHead>
                 <TableRow>

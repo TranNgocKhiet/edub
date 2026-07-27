@@ -193,7 +193,7 @@ export default function CoinPackagePage() {
   const activeCount = packages.filter((pkg) => pkg.isActive).length;
 
   return (
-    <Box sx={{ p: { xs: 1.5, md: 2 }, background: 'linear-gradient(180deg, #f8fbff 0%, #ffffff 100%)' }}>
+    <Box sx={{ p: { xs: 1.5, md: 2 }, background: 'var(--edub-surface)' }}>
       <Box
         sx={{
           display: 'flex',
@@ -284,8 +284,8 @@ export default function CoinPackagePage() {
                     <td style={tdStyle}>{pkg.isActive ? 'Đang mở bán' : 'Tạm ẩn'}</td>
                     <td style={tdStyle}>
                       <div style={actionButtonsStyle}>
-                        <button type="button" onClick={() => openEditModal(pkg)} title="Sửa" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'inline-flex', alignItems: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Pencil size={18} /></button>
-                        <button type="button" onClick={() => setDeleteTarget(pkg)} title="Xóa" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'inline-flex', alignItems: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Trash2 size={18} /></button>
+                        <button type="button" onClick={() => openEditModal(pkg)} title="Sửa" style={{ background: 'none', border: 'none', cursor: 'pointer', width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Pencil size={18} /></button>
+                        <button type="button" onClick={() => setDeleteTarget(pkg)} title="Xóa" style={{ background: 'none', border: 'none', cursor: 'pointer', width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Trash2 size={18} /></button>
                       </div>
                     </td>
                   </tr>

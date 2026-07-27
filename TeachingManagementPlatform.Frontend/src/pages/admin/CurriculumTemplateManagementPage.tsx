@@ -195,9 +195,9 @@ export default function CurriculumTemplateManagementPage() {
                       <td style={tdStyle}>{formatDate(tpl.createdAt)}</td>
                       <td style={tdStyle}>
                         <div style={actionButtonsStyle}>
-                          <button type="button" onClick={() => openViewDialog(tpl)} title="Xem" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'inline-flex', alignItems: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Eye size={18} /></button>
-                          <button type="button" onClick={() => openEditDialog(tpl)} title="Sửa" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'inline-flex', alignItems: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Pencil size={18} /></button>
-                          <button type="button" onClick={() => setDeleteTarget(tpl)} title="Xóa" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'inline-flex', alignItems: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Trash2 size={18} /></button>
+                          <button type="button" onClick={() => openViewDialog(tpl)} title="Xem" style={{ background: 'none', border: 'none', cursor: 'pointer', width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Eye size={18} /></button>
+                          <button type="button" onClick={() => openEditDialog(tpl)} title="Sửa" style={{ background: 'none', border: 'none', cursor: 'pointer', width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Pencil size={18} /></button>
+                          <button type="button" onClick={() => setDeleteTarget(tpl)} title="Xóa" style={{ background: 'none', border: 'none', cursor: 'pointer', width: 44, height: 44, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Trash2 size={18} /></button>
                         </div>
                       </td>
                     </tr>
@@ -551,7 +551,7 @@ function CurriculumTemplateDialog({ mode, template, onClose, onSaved }: DialogPr
 
 const pageStyle: React.CSSProperties = {
   padding: 24,
-  background: 'linear-gradient(180deg, #f8fbff 0%, #ffffff 100%)',
+  background: 'var(--edub-surface)',
 };
 
 const heroStyle: React.CSSProperties = {

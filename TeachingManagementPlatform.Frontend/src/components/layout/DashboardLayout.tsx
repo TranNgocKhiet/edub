@@ -159,7 +159,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {mode === 'light' ? '🌙' : '☀️'}
             </IconButton>
 
-            <Avatar sx={{ width: 40, height: 40, bgcolor: 'primary.main', color: 'primary.contrastText' }}>
+            <Avatar sx={{ width: 40, height: 40, bgcolor: 'primary.main', color: 'primary.contrastText', display: { xs: 'none', sm: 'flex' } }}>
               <CircleUser size={24} />
             </Avatar>
 
@@ -175,7 +175,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               variant="outlined"
               color="error"
               startIcon={<LogOut size={18} />}
-              sx={{ whiteSpace: 'nowrap' }}
+              aria-label="Đăng xuất"
+              sx={{
+                whiteSpace: 'nowrap',
+                minHeight: 44,
+                width: { xs: 44, sm: 132 },
+                minWidth: { xs: 44, sm: 132 },
+                px: { xs: 0, sm: 1.5 },
+                flexShrink: 0,
+                '& .MuiButton-startIcon': { m: { xs: 0, sm: '0 8px 0 -4px' } },
+                '& > span:last-of-type': { display: { xs: 'none', sm: 'inline' } },
+              }}
             >
               <Box component="span">Đăng xuất</Box>
             </Button>
