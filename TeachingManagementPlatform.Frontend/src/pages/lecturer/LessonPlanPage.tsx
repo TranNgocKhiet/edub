@@ -38,8 +38,8 @@ interface ModalState {
   plan?: LessonPlan | null;
 }
 
-const thStyle: React.CSSProperties = { textAlign: 'left', padding: '12px', borderBottom: '2px solid var(--edub-border)' };
-const tdStyle: React.CSSProperties = { padding: '12px', borderBottom: '1px solid var(--edub-border)' };
+const thStyle: React.CSSProperties = { textAlign: 'left', padding: '12px', borderBottom: '1px solid var(--edub-table-border)', backgroundColor: 'var(--edub-table-header-bg)', color: 'var(--edub-table-header-text)' };
+const tdStyle: React.CSSProperties = { padding: '12px', borderBottom: '1px solid var(--edub-table-border)' };
 const overlayStyle: React.CSSProperties = { position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(0,0,0,0.4)' };
 const deleteModalStyle: React.CSSProperties = { width: 'min(420px, calc(100% - 24px))', boxSizing: 'border-box', padding: 24, borderRadius: 12, backgroundColor: 'var(--edub-surface)', border: '1px solid var(--edub-border)' };
 
@@ -264,7 +264,7 @@ export default function LessonPlanPage() {
   }
 
   return (
-    <div style={{ padding: 24, backgroundColor: 'var(--edub-surface)', color: 'var(--edub-text-primary)', border: '1px solid var(--edub-border)', borderRadius: 16 }}>
+    <div style={{ padding: 'clamp(12px, 3vw, 24px)', backgroundColor: 'var(--edub-surface)', color: 'var(--edub-text-primary)', border: '1px solid var(--edub-border)', borderRadius: 16 }}>
       <h1 style={{ marginBottom: 24, color: 'var(--edub-text-primary)' }}>
         Giáo án
         <InlineHint text="Tạo giáo án mới hoặc sử dụng mẫu có sẵn từ cộng đồng" />
@@ -323,6 +323,7 @@ export default function LessonPlanPage() {
         <Button
           variant="outlined"
           onClick={() => loadPlans()}
+          className="btn btn-view"
           sx={{ minHeight: 44, alignSelf: { xs: 'stretch', sm: 'auto' } }}
         >
           Lọc
@@ -339,7 +340,7 @@ export default function LessonPlanPage() {
               value={joinCode}
               onChange={(e) => setJoinCode(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') handleJoinByCode(); }}
-              style={{ padding: 8, width: 120, borderRadius: 8, border: '1px solid var(--edub-input-border)', backgroundColor: 'var(--edub-input-bg)', color: 'var(--edub-text-primary)', textTransform: 'uppercase' }}
+              style={{ minHeight: 44, boxSizing: 'border-box', padding: 8, width: 120, borderRadius: 12, border: '1px solid var(--edub-input-border)', backgroundColor: 'var(--edub-input-bg)', color: 'var(--edub-text-primary)', textTransform: 'uppercase' }}
               maxLength={6}
             />
           </div>
@@ -357,7 +358,6 @@ export default function LessonPlanPage() {
         <button
           type="button"
           onClick={openCreateModal}
-          style={{ padding: '8px 16px', cursor: 'pointer', borderRadius: 8, backgroundColor: 'green', color: 'white', border: 'none' }}
           className="btn btn-add"
         >
           + Tạo giáo án
@@ -365,7 +365,7 @@ export default function LessonPlanPage() {
       </Box>
 
       {joinMessage && (
-        <div style={{ marginBottom: 12, padding: '8px 12px', borderRadius: 8, backgroundColor: joinMessage.includes('thành công') ? '#e8f5e9' : '#fce4ec', color: joinMessage.includes('thành công') ? '#2e7d32' : '#c62828', fontSize: 14 }}>
+        <div style={{ marginBottom: 12, padding: '8px 12px', borderRadius: 12, backgroundColor: joinMessage.includes('thành công') ? 'color-mix(in srgb, #2e7d32 14%, var(--edub-surface))' : 'color-mix(in srgb, #ba1a1a 14%, var(--edub-surface))', color: 'var(--edub-text-primary)', border: `1px solid ${joinMessage.includes('thành công') ? 'color-mix(in srgb, #2e7d32 30%, var(--edub-border))' : 'color-mix(in srgb, #ba1a1a 30%, var(--edub-border))'}`, fontSize: 14 }}>
           {joinMessage}
         </div>
       )}
@@ -379,6 +379,24 @@ export default function LessonPlanPage() {
           Không có giáo án nào
         </Typography>
       ) : (
+        <>
+        <Box sx={{ display: { xs: 'grid', md: 'none' }, gap: 1.5 }}>
+          {paginatedPlans.length === 0 ? (
+            <Box sx={{ p: 2, border: '1px dashed var(--edub-border)', borderRadius: 'var(--edub-banner-radius)', color: 'var(--edub-text-secondary)', textAlign: 'center' }}>Không có giáo án nào</Box>
+          ) : paginatedPlans.map((plan) => (
+            <Box key={plan.id} onClick={() => navigate(`/lecturer/lesson-plans/${plan.id}/lessons`)} sx={{ p: 2, cursor: 'pointer', border: '1px solid var(--edub-border)', borderRadius: 'var(--edub-banner-radius)', backgroundColor: 'var(--edub-surface)' }}>
+              <strong>{plan.subject} - Lớp {plan.grade}</strong>
+              <Box sx={{ mt: 0.75, color: 'var(--edub-text-secondary)', fontSize: 14 }}>Niên khóa: {plan.schoolYearStart} - {plan.schoolYearEnd}</Box>
+              <Box onClick={(event) => event.stopPropagation()} sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap', mt: 1.5 }}>
+                <ActionButton icon="share" label={getShareTooltip(plan)} color="primary" onClick={() => handleShareClick(plan)} disabled={actionLoading} />
+                {!plan.isShared && plan.shareCode && <ActionButton icon="close" label="Hủy chia sẻ" color="default" onClick={() => handleCancelPrivateShare(plan)} disabled={actionLoading} />}
+                <ActionButton icon="edit" label="Sửa" color="warning" onClick={() => openEditModal(plan)} disabled={actionLoading} />
+                <ActionButton icon="delete" label="Xóa" color="error" onClick={() => setDeleteTarget(plan)} disabled={actionLoading} />
+              </Box>
+            </Box>
+          ))}
+        </Box>
+        <Box sx={{ display: { xs: 'none', md: 'block' }, overflowX: 'auto', border: '1px solid var(--edub-table-border)', borderRadius: 'var(--edub-banner-radius)' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead>
             <tr>
@@ -399,7 +417,7 @@ export default function LessonPlanPage() {
               paginatedPlans.map((plan) => (
                 <tr
                   key={plan.id}
-                  style={{ cursor: 'pointer', backgroundColor: hoveredRowId === plan.id ? '#f5f5f5' : undefined, transition: 'background-color 0.15s' }}
+                  style={{ cursor: 'pointer', backgroundColor: hoveredRowId === plan.id ? 'var(--edub-hover)' : undefined, transition: 'background-color 0.15s' }}
                   onMouseEnter={() => setHoveredRowId(plan.id)}
                   onMouseLeave={() => setHoveredRowId(null)}
                   onClick={() => navigate(`/lecturer/lesson-plans/${plan.id}/lessons`)}
@@ -413,7 +431,7 @@ export default function LessonPlanPage() {
                       {!plan.isShared && plan.shareCode && (
                         <ActionButton icon="close" label="Hủy chia sẻ" color="default" onClick={() => handleCancelPrivateShare(plan)} disabled={actionLoading} />
                       )}
-                      <ActionButton icon="edit" label="Sửa" color="primary" onClick={() => openEditModal(plan)} disabled={actionLoading} />
+                      <ActionButton icon="edit" label="Sửa" color="warning" onClick={() => openEditModal(plan)} disabled={actionLoading} />
                       <ActionButton icon="delete" label="Xóa" color="error" onClick={() => setDeleteTarget(plan)} disabled={actionLoading} />
                     </div>
                   </td>
@@ -422,6 +440,8 @@ export default function LessonPlanPage() {
             )}
           </tbody>
         </table>
+        </Box>
+        </>
       )}
 
       <Pagination
@@ -485,7 +505,7 @@ export default function LessonPlanPage() {
               Mã chia sẻ giáo án <strong>{shareDialogPlan.subject}</strong>:
             </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-              <span style={{ fontSize: 24, fontWeight: 700, letterSpacing: 4, padding: '8px 16px', backgroundColor: '#f5f5f5', borderRadius: 8, border: '1px solid #ddd' }}>
+              <span style={{ fontSize: 24, fontWeight: 700, letterSpacing: 4, padding: '8px 16px', backgroundColor: 'var(--edub-surface-muted)', borderRadius: 12, border: '1px solid var(--edub-border)' }}>
                 {shareCodeResult}
               </span>
               <button

@@ -22,7 +22,7 @@ export default function Pagination({ totalItems, currentPage, pageSize, onPageCh
         <select
           value={pageSize}
           onChange={(e) => { onPageSizeChange(Number(e.target.value)); onPageChange(1); }}
-          style={{ padding: '4px 8px', borderRadius: 6, border: '1px solid #ccc' }}
+          style={{ minHeight: 44, padding: '4px 8px', borderRadius: 6, border: '1px solid var(--edub-input-border)', backgroundColor: 'var(--edub-input-bg)', color: 'var(--edub-text-primary)' }}
         >
           {PAGE_SIZE_OPTIONS.map((size) => (
             <option key={size} value={size}>{size}</option>
@@ -35,7 +35,7 @@ export default function Pagination({ totalItems, currentPage, pageSize, onPageCh
           type="button"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage <= 1}
-          style={{ padding: '4px 10px', borderRadius: 6, border: '1px solid #ccc', cursor: currentPage <= 1 ? 'not-allowed' : 'pointer', opacity: currentPage <= 1 ? 0.5 : 1 }}
+          style={{ minWidth: 44, minHeight: 44, padding: '4px 10px', borderRadius: 6, border: '1px solid var(--edub-input-border)', backgroundColor: 'var(--edub-surface-muted)', color: 'var(--edub-text-primary)', cursor: currentPage <= 1 ? 'not-allowed' : 'pointer', opacity: currentPage <= 1 ? 0.62 : 1 }}
         >
           ←
         </button>
@@ -46,7 +46,7 @@ export default function Pagination({ totalItems, currentPage, pageSize, onPageCh
           type="button"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
-          style={{ padding: '4px 10px', borderRadius: 6, border: '1px solid #ccc', cursor: currentPage >= totalPages ? 'not-allowed' : 'pointer', opacity: currentPage >= totalPages ? 0.5 : 1 }}
+          style={{ minWidth: 44, minHeight: 44, padding: '4px 10px', borderRadius: 6, border: '1px solid var(--edub-input-border)', backgroundColor: 'var(--edub-surface-muted)', color: 'var(--edub-text-primary)', cursor: currentPage >= totalPages ? 'not-allowed' : 'pointer', opacity: currentPage >= totalPages ? 0.62 : 1 }}
         >
           →
         </button>

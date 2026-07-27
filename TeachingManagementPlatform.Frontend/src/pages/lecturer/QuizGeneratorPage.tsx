@@ -155,16 +155,16 @@ export default function QuizGeneratorPage() {
         <button type="button" className="btn btn-add" disabled={selectedFiles.length === 0 || !title.trim() || loading || !hasEnoughCoin} onClick={() => void handleGenerate()}>
           {loading ? 'Đang tạo...' : `Tạo quiz (${estimatedCost} ECoin)`}
         </button>
-        <span style={{ color: '#64748b', fontSize: 13 }}>Miễn phí: {wallet.freeEcoinBalance ?? 0} · Trả phí: {wallet.coinBalance}</span>
+        <span style={{ color: 'var(--edub-text-secondary)', fontSize: 13 }}>Miễn phí: {wallet.freeEcoinBalance ?? 0} · Trả phí: {wallet.coinBalance}</span>
         {!hasEnoughCoin && <span style={{ color: '#dc2626', fontSize: 13 }}>Không đủ ECoin</span>}
       </div>
     </Box>
   );
 }
 
-const alertStyle: React.CSSProperties = { marginBottom: 16, padding: 12, borderRadius: 12, backgroundColor: '#fff1f2', border: '1px solid #fecdd3', color: '#9f1239' };
-const cardStyle: React.CSSProperties = { padding: 20, borderRadius: 16, border: '1px solid #e2e8f0', backgroundColor: '#fff' };
+const alertStyle: React.CSSProperties = { marginBottom: 16, padding: 12, borderRadius: 12, backgroundColor: 'color-mix(in srgb, #ba1a1a 12%, var(--edub-surface))', border: '1px solid color-mix(in srgb, #ba1a1a 32%, var(--edub-border))', color: 'var(--edub-text-primary)' };
+const cardStyle: React.CSSProperties = { padding: 20, borderRadius: 16, border: '1px solid var(--edub-border)', backgroundColor: 'var(--edub-surface)', color: 'var(--edub-text-primary)' };
 const sectionTitle: React.CSSProperties = { margin: '0 0 12px', fontSize: 18 };
-const dropZoneStyle: React.CSSProperties = { display: 'block', padding: 24, borderRadius: 12, border: '2px dashed #cbd5e1', textAlign: 'center', cursor: 'pointer' };
+const dropZoneStyle: React.CSSProperties = { display: 'block', padding: 24, borderRadius: 12, border: '2px dashed var(--edub-input-border)', textAlign: 'center', cursor: 'pointer' };
 const fieldStyle: React.CSSProperties = { display: 'flex', flexDirection: 'column', gap: 6 };
-const inputStyle: React.CSSProperties = { width: '100%', padding: '10px 12px', borderRadius: 10, border: '1px solid #cbd5e1', boxSizing: 'border-box' as const };
+const inputStyle: React.CSSProperties = { width: '100%', minHeight: 44, padding: '10px 12px', borderRadius: 12, border: '1px solid var(--edub-input-border)', backgroundColor: 'var(--edub-input-bg)', color: 'var(--edub-text-primary)', boxSizing: 'border-box' as const };

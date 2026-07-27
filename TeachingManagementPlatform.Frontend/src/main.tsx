@@ -33,6 +33,10 @@ function AppShell() {
     document.documentElement.style.colorScheme = mode;
   }, [mode]);
 
+  useEffect(() => {
+    document.documentElement.style.setProperty('--primary-color', primaryColor);
+  }, [primaryColor]);
+
   // Sync theme from server on app init (non-blocking)
   useEffect(() => {
     const token = localStorage.getItem('token');

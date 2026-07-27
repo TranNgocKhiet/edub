@@ -76,7 +76,7 @@ export default function LandingPage() {
         sx={{
           bgcolor: 'background.paper',
           borderBottom: '1px solid',
-          borderColor: 'divider',
+          borderColor: 'primary.main',
           backdropFilter: 'blur(8px)',
           backgroundImage: 'none',
         }}
@@ -86,7 +86,7 @@ export default function LandingPage() {
             variant="h6"
             component={Link}
             to="/"
-            sx={{ flexGrow: 1, fontWeight: 700, textDecoration: 'none', color: 'inherit' }}
+            sx={{ flexGrow: 1, fontWeight: 700, textDecoration: 'none', color: 'primary.main' }}
           >
             EduB
           </Typography>

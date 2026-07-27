@@ -115,7 +115,7 @@ export default function CrosswordListPage() {
           variant="contained"
           startIcon={<Plus size={18} />}
           onClick={() => navigate('/lecturer/crossword/new')}
-          sx={{ minHeight: 44, minWidth: 44, whiteSpace: 'nowrap' }}
+          sx={{ minHeight: 44, minWidth: 44, whiteSpace: 'nowrap', bgcolor: 'var(--btn-add)', '&:hover': { bgcolor: 'var(--btn-add)' } }}
         >
           Tạo ô chữ mới
         </Button>
@@ -157,7 +157,7 @@ export default function CrosswordListPage() {
             variant="contained"
             startIcon={<Plus size={18} />}
             onClick={() => navigate('/lecturer/crossword/new')}
-            sx={{ minHeight: 44 }}
+            sx={{ minHeight: 44, bgcolor: 'var(--btn-add)', '&:hover': { bgcolor: 'var(--btn-add)' } }}
           >
             Tạo ô chữ mới
           </Button>
@@ -167,7 +167,49 @@ export default function CrosswordListPage() {
       {/* Mobile Card View */}
       {!loading && items.length > 0 && (
         <>
-          <TableContainer component={Paper} variant="outlined">
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', gap: 1.5 }}>
+            {paginatedItems.map((item) => {
+              const statusCfg = STATUS_CONFIG[item.status] ?? STATUS_CONFIG[GameStatusEnum.Draft];
+              return (
+                <Card key={item.id}>
+                  <CardContent sx={{ p: 2 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 1, mb: 1.5 }}>
+                      <Typography variant="h6" sx={{ fontWeight: 700, minWidth: 0, overflowWrap: 'anywhere' }}>
+                        {item.title}
+                      </Typography>
+                      <Chip label={statusCfg.label} color={statusCfg.color} size="small" variant="outlined" />
+                    </Box>
+                    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 1, mb: 2 }}>
+                      <Box><Typography variant="caption" color="text.secondary">Ngày tạo</Typography><Typography variant="body2">{formatDate(item.createdAt)}</Typography></Box>
+                      <Box><Typography variant="caption" color="text.secondary">Số từ</Typography><Typography variant="body2">{item.wordCount}</Typography></Box>
+                      <Box><Typography variant="caption" color="text.secondary">ECoin</Typography><Typography variant="body2">{item.ecoinsSpent} 🪙</Typography></Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                      {item.status === 'published' && (
+                        <Button fullWidth variant="outlined" color="success" startIcon={<Play size={18} />} onClick={() => window.open(`/play/${item.slug}`, '_blank')} sx={{ minHeight: 44 }}>
+                          Chơi
+                        </Button>
+                      )}
+                      {item.status === 'published' && (
+                        <Button fullWidth variant="outlined" startIcon={<Copy size={18} />} onClick={async () => {
+                          await navigator.clipboard.writeText(`${window.location.origin}/play/${item.slug}`);
+                          setCopiedId(item.id);
+                          setTimeout(() => setCopiedId(null), 2000);
+                        }} sx={{ minHeight: 44 }}>
+                          {copiedId === item.id ? 'Đã copy!' : 'Copy link'}
+                        </Button>
+                      )}
+                      <Box sx={{ display: 'flex', gap: 1 }}>
+                        <Button fullWidth variant="outlined" startIcon={<Pencil size={18} />} onClick={() => navigate(`/lecturer/crossword/${item.id}/edit`)} sx={{ minHeight: 44 }}>Chỉnh sửa</Button>
+                        <Button fullWidth variant="outlined" className="btn btn-delete" startIcon={<Trash2 size={18} />} onClick={() => setDeleteTarget(item)} sx={{ minHeight: 44 }}>Xóa</Button>
+                      </Box>
+                    </Box>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </Box>
+          <TableContainer component={Paper} variant="outlined" sx={{ display: { xs: 'none', md: 'block' } }}>
             <Table>
               <TableHead>
                 <TableRow>

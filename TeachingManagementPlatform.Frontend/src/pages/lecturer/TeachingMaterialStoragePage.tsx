@@ -253,7 +253,7 @@ export default function TeachingMaterialStoragePage() {
       )}
 
       {quota && (
-        <div style={{ marginBottom: 20, padding: 16, borderRadius: 12, background: 'linear-gradient(135deg, rgba(25,118,210,0.08), rgba(46,125,50,0.08))', border: '1px solid rgba(0,0,0,0.08)' }}>
+        <div style={{ marginBottom: 20, padding: 16, borderRadius: 16, background: 'var(--edub-surface-muted)', border: '1px solid var(--edub-border)' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12, marginBottom: 8, flexWrap: 'wrap' }}>
             <div>
               <div style={{ fontSize: 12, opacity: 0.75, marginBottom: 4 }}>Gói hiện tại</div>
@@ -272,8 +272,8 @@ export default function TeachingMaterialStoragePage() {
               <div style={{ fontWeight: 700 }}>{formatQuotaPercent(quota.usagePercent)}</div>
             </div>
           </div>
-          <div style={{ height: 10, borderRadius: 999, background: 'rgba(0,0,0,0.08)', overflow: 'hidden' }}>
-            <div style={{ width: `${Math.min(100, Math.max(0, quota.usagePercent))}%`, height: '100%', background: quota.usagePercent >= 90 ? '#d32f2f' : '#1976d2', transition: 'width 200ms ease' }} />
+          <div style={{ height: 10, borderRadius: 8, background: 'var(--edub-hover)', overflow: 'hidden' }}>
+            <div style={{ width: `${Math.min(100, Math.max(0, quota.usagePercent))}%`, height: '100%', background: quota.usagePercent >= 90 ? '#ba1a1a' : 'var(--primary-color)', transition: 'width 200ms ease' }} />
           </div>
         </div>
       )}
@@ -330,13 +330,13 @@ export default function TeachingMaterialStoragePage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           aria-label="Tìm kiếm"
-          style={{ padding: 8, width: 180, borderRadius: 8 }}
+          style={{ padding: 8, width: 180, minHeight: 44, borderRadius: 12, border: '1px solid var(--edub-input-border)', backgroundColor: 'var(--edub-input-bg)', color: 'var(--edub-text-primary)' }}
         />
         <select
           value={fileTypeFilter}
           onChange={(e) => setFileTypeFilter(e.target.value)}
           aria-label="Loại tệp"
-          style={{ padding: 8, borderRadius: 8 }}
+          style={{ padding: 8, minHeight: 44, borderRadius: 12, border: '1px solid var(--edub-input-border)', backgroundColor: 'var(--edub-input-bg)', color: 'var(--edub-text-primary)' }}
         >
           <option value="">Tất cả file</option>
           <option value="word">Word</option>
@@ -349,7 +349,7 @@ export default function TeachingMaterialStoragePage() {
           value={dateRangeFilter}
           onChange={(e) => setDateRangeFilter(e.target.value)}
           aria-label="Thời gian"
-          style={{ padding: 8, borderRadius: 8 }}
+          style={{ padding: 8, minHeight: 44, borderRadius: 12, border: '1px solid var(--edub-input-border)', backgroundColor: 'var(--edub-input-bg)', color: 'var(--edub-text-primary)' }}
         >
           <option value="">Tất cả ngày</option>
           <option value="today">Hôm nay</option>
@@ -362,14 +362,14 @@ export default function TeachingMaterialStoragePage() {
           value={getSortValue()}
           onChange={(e) => handleSortChange(e.target.value)}
           aria-label="Sắp xếp"
-          style={{ padding: 8, borderRadius: 8 }}
+          style={{ padding: 8, minHeight: 44, borderRadius: 12, border: '1px solid var(--edub-input-border)', backgroundColor: 'var(--edub-input-bg)', color: 'var(--edub-text-primary)' }}
         >
           <option value="name-asc">Tên A-Z</option>
           <option value="name-desc">Tên Z-A</option>
           <option value="date-desc">Mới nhất</option>
           <option value="date-asc">Cũ nhất</option>
         </select>
-        <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', borderRadius: 8, padding: '6px 10px', border: '1px solid #ccc' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer', minHeight: 44, borderRadius: 12, padding: '6px 10px', border: '1px solid var(--edub-input-border)', color: 'var(--edub-text-primary)' }}>
           <input
             type="checkbox"
             checked={foldersFirst}
@@ -425,7 +425,7 @@ export default function TeachingMaterialStoragePage() {
               items.map((item) => (
                 <tr
                   key={item.id}
-                  style={{ cursor: 'pointer', backgroundColor: hoveredRowId === item.id ? '#f5f5f5' : undefined, transition: 'background-color 0.15s' }}
+                  style={{ cursor: 'pointer', backgroundColor: hoveredRowId === item.id ? 'var(--edub-hover)' : undefined, transition: 'background-color 0.15s' }}
                   onMouseEnter={() => setHoveredRowId(item.id)}
                   onMouseLeave={() => setHoveredRowId(null)}
                   onClick={item.itemType === ItemType.Folder ? () => openFolder(item) : item.itemType === ItemType.File ? () => handleOpen(item) : undefined}
@@ -435,7 +435,7 @@ export default function TeachingMaterialStoragePage() {
                       <button
                         type="button"
                         onClick={() => openFolder(item)}
-                        style={{ background: 'none', border: 'none', color: '#1976d2', cursor: 'pointer', padding: 0}}
+                        style={{ background: 'none', border: 'none', color: 'var(--primary-color)', cursor: 'pointer', padding: 0}}
                       >
                         📁 {item.name}
                       </button>
@@ -449,7 +449,7 @@ export default function TeachingMaterialStoragePage() {
                   </td>
                   <td style={{ ...tdStyle, textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
                     <div style={{ display: 'flex', gap: 6, justifyContent: 'center', flexWrap: 'wrap' }}>
-                      <ActionButton icon="edit" label="Đổi tên" color="primary" onClick={() => startRename(item)} disabled={actionLoading} />
+                      <ActionButton icon="edit" label="Đổi tên" color="warning" onClick={() => startRename(item)} disabled={actionLoading} />
                       {item.itemType === ItemType.File && (
                         <ActionButton icon="download" label="Tải" color="default" onClick={() => handleDownload(item)} disabled={actionLoading} />
                       )}
@@ -557,12 +557,14 @@ export default function TeachingMaterialStoragePage() {
 const thStyle: React.CSSProperties = {
   textAlign: 'left',
   padding: '8px 12px',
-  borderBottom: '2px solid #ccc',
+  borderBottom: '1px solid var(--edub-table-border)',
+  backgroundColor: 'var(--edub-table-header-bg)',
+  color: 'var(--edub-table-header-text)',
 };
 
 const tdStyle: React.CSSProperties = {
   padding: '8px 12px',
-  borderBottom: '1px solid #eee',
+  borderBottom: '1px solid var(--edub-table-border)',
 };
 
 const overlayStyle: React.CSSProperties = {

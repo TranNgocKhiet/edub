@@ -251,7 +251,7 @@ export default function HomePage() {
         sx={{
           bgcolor: 'background.paper',
           borderBottom: '1px solid',
-          borderColor: 'divider',
+          borderColor: 'primary.main',
           backdropFilter: 'blur(8px)',
           backgroundImage: 'none',
         }}
@@ -261,7 +261,7 @@ export default function HomePage() {
             variant="h6"
             component={Link}
             to="/"
-            sx={{ flexGrow: 1, fontWeight: 700, textDecoration: 'none', color: 'inherit' }}
+            sx={{ flexGrow: 1, fontWeight: 700, textDecoration: 'none', color: 'primary.main' }}
           >
             EduB
           </Typography>
@@ -669,7 +669,7 @@ function LecturerCard({ lecturer, onViewProfile }: LecturerCardProps) {
       </CardContent>
 
       <CardActions sx={{ mt: 'auto', pt: 0, px: 2.5, pb: 2.5 }}>
-        <Button variant="contained" fullWidth onClick={onViewProfile}>Xem hồ sơ</Button>
+        <Button variant="contained" fullWidth className="btn btn-view" onClick={onViewProfile}>Xem hồ sơ</Button>
       </CardActions>
     </Card>
   );

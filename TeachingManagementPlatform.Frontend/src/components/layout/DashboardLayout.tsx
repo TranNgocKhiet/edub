@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
-import { CircleUser, LogOut, GraduationCap, Menu, X } from 'lucide-react';
+import { CircleUser, Coins, LogOut, GraduationCap, Menu, X } from 'lucide-react';
 import {
   AppBar,
   Avatar,
@@ -159,7 +159,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {mode === 'light' ? '🌙' : '☀️'}
             </IconButton>
 
-            <Avatar sx={{ width: 40, height: 40, bgcolor: 'primary.main', color: 'primary.contrastText' }}>
+            <Avatar sx={{ width: 40, height: 40, bgcolor: 'primary.main', color: 'primary.contrastText', display: { xs: 'none', sm: 'flex' } }}>
               <CircleUser size={24} />
             </Avatar>
 
@@ -175,7 +175,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               variant="outlined"
               color="error"
               startIcon={<LogOut size={18} />}
-              sx={{ whiteSpace: 'nowrap' }}
+              aria-label="Đăng xuất"
+              sx={{
+                whiteSpace: 'nowrap',
+                minHeight: 44,
+                width: { xs: 44, sm: 132 },
+                minWidth: { xs: 44, sm: 132 },
+                px: { xs: 0, sm: 1.5 },
+                flexShrink: 0,
+                '& .MuiButton-startIcon': { m: { xs: 0, sm: '0 8px 0 -4px' } },
+                '& > span:last-of-type': { display: { xs: 'none', sm: 'inline' } },
+              }}
             >
               <Box component="span">Đăng xuất</Box>
             </Button>
@@ -226,9 +236,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     bgcolor: 'primary.dark',
                   },
                 },
-                '&:hover': {
-                  bgcolor: 'rgba(196, 138, 16, 0.12)',
-                },
+                '&:hover': { bgcolor: 'action.hover' },
               }}
             >
               <ListItemText
@@ -244,9 +252,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         {role !== Role.Admin && (
           <Box sx={{ borderTop: '1px solid', borderColor: 'divider', pt: 2 }}>
             {coinBalance !== null && (
-              <Typography variant="body2" sx={{ fontWeight: 700, mb: 1 }}>
-                🪙 {coinBalance.toLocaleString('vi-VN')} ECoin
-              </Typography>
+              <Box sx={{ mb: 1 }}>
+                <Typography variant="body2" sx={{ fontWeight: 700, mb: 0.5 }}>
+                  <Coins size={18} color="var(--primary-color)" aria-hidden="true" /> ECoin
+                </Typography>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                  Miễn phí: {(freeEcoinBalance ?? 0).toLocaleString('vi-VN')}/{freeEcoinMax.toLocaleString('vi-VN')}
+                </Typography>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                  Trả phí: {coinBalance.toLocaleString('vi-VN')}
+                </Typography>
+              </Box>
             )}
             {subName ? (
               <>
@@ -256,7 +272,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   size="small"
                   sx={{ fontWeight: 600, mb: 0.5 }}
                 />
-                {daysRemaining !== null && (
+                {!isFreePlan && daysRemaining !== null && (
                   <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: daysRemaining <= 5 ? 'error.main' : 'text.secondary' }}>
                     {daysRemaining > 0 ? `Còn ${daysRemaining} ngày` : 'Đã hết hạn'}
                   </Typography>
@@ -338,7 +354,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               {coinBalance !== null && (
                 <Box sx={{ mb: 1 }}>
                   <Typography variant="body2" sx={{ fontWeight: 700, mb: 0.5 }}>
-                    🪙 ECoin
+                    <Coins size={18} color="var(--primary-color)" aria-hidden="true" /> ECoin
                   </Typography>
                   <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
                     Miễn phí: {(freeEcoinBalance ?? 0).toLocaleString('vi-VN')}/{freeEcoinMax.toLocaleString('vi-VN')}
@@ -356,11 +372,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     size="small"
                     sx={{ fontWeight: 600, mb: 0.5 }}
                   />
-                  <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: daysRemaining !== null && daysRemaining <= 5 ? 'error.main' : 'text.secondary' }}>
-                    {daysRemaining !== null
-                      ? (daysRemaining > 0 ? `Còn ${daysRemaining} ngày` : 'Đã hết hạn')
-                      : 'Chưa xác định thời hạn'}
-                  </Typography>
+                  {!isFreePlan && (
+                    <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: daysRemaining !== null && daysRemaining <= 5 ? 'error.main' : 'text.secondary' }}>
+                      {daysRemaining !== null
+                        ? (daysRemaining > 0 ? `Còn ${daysRemaining} ngày` : 'Đã hết hạn')
+                        : 'Chưa xác định thời hạn'}
+                    </Typography>
+                  )}
                 </>
               ) : (
                 <Typography variant="caption" sx={{ color: 'text.secondary' }}>

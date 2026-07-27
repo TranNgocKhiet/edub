@@ -155,8 +155,8 @@ export default function CoinPurchasePage() {
   }
 
   return (
-    <div style={pageStyle}>
-      <div style={heroStyle}>
+    <Box sx={{ ...pageStyle, p: { xs: 1.5, md: 3 } }}>
+      <Box className="page-header-banner" sx={{ ...heroStyle, p: { xs: 2, md: 3 }, mb: { xs: 2, md: 2.5 } }}>
         <div>
           <p style={eyebrowStyle}>Ví ECoin </p>
           <h1 style={titleStyle}>Mua ECoin cho tài khoản lecturer</h1>
@@ -164,7 +164,7 @@ export default function CoinPurchasePage() {
             Gói này dùng để trừ lượt khi tạo quiz bằng AI. Khi bấm mua, bạn sẽ được chuyển sang cổng thanh toán PayOS.
           </p>
         </div>
-      </div>
+      </Box>
 
       {error && (
         <Box role="alert" sx={{ ...alertStyle, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, justifyContent: 'space-between', gap: 1.5 }}>
@@ -213,7 +213,7 @@ export default function CoinPurchasePage() {
           ))}
         </div>
       )}
-    </div>
+    </Box>
   );
 }
 
@@ -223,11 +223,11 @@ const pageStyle: React.CSSProperties = {
 const heroStyle: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
-  gap: 24,
-  marginBottom: 20,
-  padding: 24,
+  gap: '24px',
+  marginBottom: '20px',
+  padding: '24px',
   borderRadius: 'var(--edub-banner-radius)',
-  background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)',
+  background: 'var(--edub-header-background)',
   color: '#fff',
   boxShadow: '0 18px 40px rgba(15, 23, 42, 0.16)',
 };
@@ -252,9 +252,9 @@ const subtitleStyle: React.CSSProperties = {
 };
 
 const alertStyle: React.CSSProperties = {
-  marginBottom: 16,
-  padding: 12,
-  borderRadius: 12,
+  marginBottom: '16px',
+  padding: '12px',
+  borderRadius: '12px',
   backgroundColor: '#fff1f2',
   border: '1px solid #fecdd3',
   color: '#9f1239',
@@ -270,11 +270,11 @@ const successStyle: React.CSSProperties = {
 };
 
 const emptyStateStyle: React.CSSProperties = {
-  padding: 24,
-  borderRadius: 16,
-  border: '1px dashed #cbd5e1',
-  backgroundColor: '#f8fafc',
-  color: '#475569',
+  padding: '24px',
+  borderRadius: '16px',
+  border: '1px dashed var(--edub-border)',
+  backgroundColor: 'var(--edub-surface-muted)',
+  color: 'var(--edub-text-secondary)',
   textAlign: 'center',
 };
 
@@ -287,8 +287,8 @@ const gridStyle: React.CSSProperties = {
 const cardStyle: React.CSSProperties = {
   padding: 20,
   borderRadius: 18,
-  backgroundColor: '#fff',
-  border: '1px solid #e2e8f0',
+  backgroundColor: 'var(--edub-surface)',
+  border: '1px solid var(--edub-border)',
   boxShadow: '0 10px 30px rgba(15, 23, 42, 0.06)',
   display: 'flex',
   flexDirection: 'column',
