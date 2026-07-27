@@ -10,7 +10,7 @@ import {
   SwipeableDrawer,
   IconButton,
 } from '@mui/material';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import { ChevronUp } from 'lucide-react';
 import * as crosswordService from '../../services/crosswordService';
 import * as coinService from '../../services/coinService';
 import { buildGrid, rebuildGridFromPositions, hasSavedPositions } from '../../utils/gridBuilder';
@@ -206,7 +206,7 @@ export default function CrosswordEditorPage() {
 
         // Set ecoin balance from wallet
         if (wallet) {
-          setEcoinBalance(wallet.coinBalance);
+          setEcoinBalance((wallet.freeEcoinBalance ?? 0) + wallet.coinBalance);
         }
       } catch (err: unknown) {
         if (cancelled) return;
@@ -286,7 +286,7 @@ export default function CrosswordEditorPage() {
 
       // Update ecoin balance
       const wallet = await coinService.getLecturerCoinWallet().catch(() => null);
-      if (wallet) setEcoinBalance(wallet.coinBalance);
+      if (wallet) setEcoinBalance((wallet.freeEcoinBalance ?? 0) + wallet.coinBalance);
     } catch (err: unknown) {
       const message =
         err && typeof err === 'object' && 'message' in err
@@ -756,7 +756,7 @@ export default function CrosswordEditorPage() {
         }}
       >
         <IconButton onClick={() => setBottomSheetOpen(true)} aria-label="Mở danh sách gợi ý">
-          <ExpandLessIcon />
+          <ChevronUp size={24} />
         </IconButton>
         <Typography variant="body2" sx={{ ml: 1, color: '#475569' }}>
           Xem gợi ý ({gridResult.placedWords.length} từ)

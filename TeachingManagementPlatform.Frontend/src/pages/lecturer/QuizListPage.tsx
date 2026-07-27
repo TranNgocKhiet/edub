@@ -1,19 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Box, Button, Chip, CircularProgress, Dialog, DialogActions, DialogContent,
+  Box, Button, Card, CardContent, Chip, CircularProgress, Dialog, DialogActions, DialogContent,
   DialogContentText, DialogTitle, Paper, Table, TableBody, TableCell,
   TableContainer, TableHead, TableRow, TextField, Typography,
 } from '@mui/material';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
-import CreateIcon from '@mui/icons-material/Create';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
+import { Plus, Pencil, Trash2, Play, Sparkles, PenLine, Copy } from 'lucide-react';
 import * as quizService from '../../services/quizService';
 import type { QuizListItem } from '../../services/quizService';
+import Pagination, { usePagination } from '../../components/common/Pagination';
 
 export default function QuizListPage() {
   const navigate = useNavigate();
@@ -29,6 +24,9 @@ export default function QuizListPage() {
   const [manualTitle, setManualTitle] = useState('');
   const [creating, setCreating] = useState(false);
   const [copiedId, setCopiedId] = useState<number | null>(null);
+  const [duplicating, setDuplicating] = useState<number | null>(null);
+
+  const { paginatedItems, currentPage, pageSize, totalItems, setCurrentPage, setPageSize } = usePagination(items);
 
   const loadList = useCallback(async () => {
     setLoading(true);
@@ -76,87 +74,210 @@ export default function QuizListPage() {
     }
   }, [manualTitle, navigate]);
 
+  const handleDuplicate = useCallback(async (quizId: number) => {
+    setDuplicating(quizId);
+    try {
+      await quizService.duplicateQuiz(quizId);
+      await loadList();
+    } catch (err: any) {
+      setError(err?.message || 'Nhân bản thất bại.');
+    } finally {
+      setDuplicating(null);
+    }
+  }, [loadList]);
+
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 2 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3, p: { xs: 1.5, md: 2 } }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: { xs: 'flex-start', sm: 'center' }, flexWrap: 'wrap', gap: 2, flexDirection: { xs: 'column', sm: 'row' } }}>
         <Box>
           <Typography variant="h4" sx={{ fontWeight: 800, mb: 1 }}>Quiz</Typography>
           <Typography variant="body2" color="text.secondary">Quản lý bài quiz trắc nghiệm của bạn.</Typography>
         </Box>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={() => setCreateDialogOpen(true)}>
+        <Button variant="contained" startIcon={<Plus size={18} />} onClick={() => setCreateDialogOpen(true)}>
           Tạo quiz mới
         </Button>
       </Box>
 
-      {error && <Typography role="alert" color="error">{error}</Typography>}
+      {error && <Typography role="alert" color="error" sx={{ p: 2, bgcolor: 'error.lighter', borderRadius: 1 }}>{error}</Typography>}
 
       {loading && <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}><CircularProgress /></Box>}
 
       {!loading && items.length === 0 && (
-        <Box sx={{ border: '1px dashed', borderColor: 'divider', borderRadius: 3, p: 4, textAlign: 'center', bgcolor: 'action.hover' }}>
+        <Box sx={{ border: '1px dashed', borderColor: 'divider', borderRadius: 3, p: { xs: 2, md: 4 }, textAlign: 'center', bgcolor: 'action.hover' }}>
           <Typography variant="h6" sx={{ fontWeight: 700, mb: 1 }}>Chưa có quiz nào</Typography>
-          <Button variant="contained" startIcon={<AddIcon />} onClick={() => setCreateDialogOpen(true)}>Tạo quiz mới</Button>
+          <Button variant="contained" startIcon={<Plus size={18} />} onClick={() => setCreateDialogOpen(true)}>Tạo quiz mới</Button>
         </Box>
       )}
 
+      {/* Mobile Card View */}
       {!loading && items.length > 0 && (
-        <TableContainer component={Paper} variant="outlined">
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell sx={{ fontWeight: 700 }}>Tiêu đề</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Trạng thái</TableCell>
-                <TableCell sx={{ fontWeight: 700 }} align="center">Câu hỏi</TableCell>
-                <TableCell sx={{ fontWeight: 700 }} align="center">Bài nộp</TableCell>
-                <TableCell sx={{ fontWeight: 700 }} align="right">Hành động</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {items.map((item) => (
-                <TableRow key={item.id} hover>
-                  <TableCell><Typography variant="body2" sx={{ fontWeight: 600 }}>{item.title || 'Chưa đặt tên'}</Typography></TableCell>
-                  <TableCell>
-                    <Chip label={item.status === 'published' ? 'Đã xuất bản' : 'Nháp'} color={item.status === 'published' ? 'success' : 'default'} size="small" variant="outlined" />
-                  </TableCell>
-                  <TableCell align="center">{item.questionCount}</TableCell>
-                  <TableCell align="center">{item.submissionCount}</TableCell>
-                  <TableCell align="right">
-                    <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
-                      {item.status === 'published' && (
-                        <Button size="small" variant="outlined" color="success" startIcon={<PlayArrowIcon />} onClick={() => window.open(`/quiz/${item.slug}`, '_blank')}>
-                          Chơi
+        <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', gap: 2 }}>
+          {items.map((item) => (
+            <Card key={item.id} sx={{ borderRadius: 2 }}>
+              <CardContent sx={{ p: 2 }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
+                  {item.title || 'Chưa đặt tên'}
+                </Typography>
+
+                <Box sx={{ display: 'flex', gap: 1, mb: 1.5, flexWrap: 'wrap' }}>
+                  <Chip
+                    label={item.status === 'published' ? 'Đã xuất bản' : 'Nháp'}
+                    color={item.status === 'published' ? 'success' : 'default'}
+                    size="small"
+                    variant="outlined"
+                  />
+                </Box>
+
+                <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 1, mb: 2, fontSize: { xs: 0.875, sm: 1 } }}>
+                  <Box>
+                    <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+                      Câu hỏi
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                      {item.questionCount}
+                    </Typography>
+                  </Box>
+                  <Box>
+                    <Typography variant="caption" sx={{ color: 'text.secondary', fontWeight: 600 }}>
+                      Bài nộp
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                      {item.submissionCount}
+                    </Typography>
+                  </Box>
+                </Box>
+
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  {item.status === 'published' && (
+                    <>
+                      <Button
+                        fullWidth
+                        size="small"
+                        variant="outlined"
+                        color="success"
+                        startIcon={<Play size={18} />}
+                        onClick={() => window.open(`/quiz/${item.slug}`, '_blank')}
+                        sx={{ minHeight: 44 }}
+                      >
+                        Chơi
+                      </Button>
+                      <Button
+                        fullWidth
+                        size="small"
+                        variant="outlined"
+                        startIcon={<Copy size={18} />}
+                        onClick={async () => {
+                          await navigator.clipboard.writeText(`${window.location.origin}/quiz/${item.slug}`);
+                          setCopiedId(item.id);
+                          setTimeout(() => setCopiedId(null), 2000);
+                        }}
+                        sx={{ minHeight: 44 }}
+                      >
+                        {copiedId === item.id ? 'Đã copy!' : 'Copy link'}
+                      </Button>
+                    </>
+                  )}
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Button
+                      fullWidth
+                      size="small"
+                      variant="outlined"
+                      startIcon={<Pencil size={18} />}
+                      onClick={() => navigate(`/lecturer/quiz/${item.id}/edit`)}
+                      sx={{ minHeight: 44 }}
+                    >
+                      Quản lý
+                    </Button>
+                    <Button
+                      fullWidth
+                      size="small"
+                      variant="outlined"
+                      color="error"
+                      startIcon={<Trash2 size={18} />}
+                      onClick={() => setDeleteTarget(item)}
+                      sx={{ minHeight: 44 }}
+                    >
+                      Xóa
+                    </Button>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      )}
+
+      {/* Desktop Table View */}
+      {!loading && items.length > 0 && (
+        <>
+          <TableContainer component={Paper} variant="outlined">
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell sx={{ fontWeight: 700 }}>Tiêu đề</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }}>Trạng thái</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }} align="center">Câu hỏi</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }} align="center">Bài nộp</TableCell>
+                  <TableCell sx={{ fontWeight: 700 }} align="center">Hành động</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {paginatedItems.map((item) => (
+                  <TableRow key={item.id} hover>
+                    <TableCell><Typography variant="body2" sx={{ fontWeight: 600 }}>{item.title || 'Chưa đặt tên'}</Typography></TableCell>
+                    <TableCell>
+                      <Chip label={item.status === 'published' ? 'Đã xuất bản' : 'Nháp'} color={item.status === 'published' ? 'success' : 'default'} size="small" variant="outlined" />
+                    </TableCell>
+                    <TableCell align="center">{item.questionCount}</TableCell>
+                    <TableCell align="center">{item.submissionCount}</TableCell>
+                    <TableCell align="center">
+                      <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center' }}>
+                        {item.status === 'published' && (
+                          <Button size="small" variant="outlined" color="success" startIcon={<Play size={18} />} onClick={() => window.open(`/quiz/${item.slug}`, '_blank')}>
+                            Chơi
+                          </Button>
+                        )}
+                        {item.status === 'published' && (
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            startIcon={<Copy size={18} />}
+                            onClick={async () => {
+                              await navigator.clipboard.writeText(`${window.location.origin}/quiz/${item.slug}`);
+                              setCopiedId(item.id);
+                              setTimeout(() => setCopiedId(null), 2000);
+                            }}
+                          >
+                            {copiedId === item.id ? 'Đã copy!' : 'Copy link'}
+                          </Button>
+                        )}
+                        <Button size="small" variant="outlined" startIcon={<Pencil size={18} />} onClick={() => navigate(`/lecturer/quiz/${item.id}/edit`)}>
+                          Quản lý
                         </Button>
-                      )}
-                      {item.status === 'published' && (
                         <Button
                           size="small"
                           variant="outlined"
-                          startIcon={<ContentCopyIcon />}
-                          onClick={async () => {
-                            await navigator.clipboard.writeText(`${window.location.origin}/quiz/${item.slug}`);
-                            setCopiedId(item.id);
-                            setTimeout(() => setCopiedId(null), 2000);
-                          }}
+                          startIcon={<Copy size={18} />}
+                          onClick={() => void handleDuplicate(item.id)}
+                          disabled={duplicating === item.id}
                         >
-                          {copiedId === item.id ? 'Đã copy!' : 'Copy link'}
+                          {duplicating === item.id ? 'Đang nhân bản...' : 'Nhân bản'}
                         </Button>
-                      )}
-                      <Button size="small" variant="outlined" startIcon={<EditIcon />} onClick={() => navigate(`/lecturer/quiz/${item.id}/edit`)}>
-                        Quản lý
-                      </Button>
-                      <Button size="small" variant="outlined" color="error" startIcon={<DeleteIcon />} onClick={() => setDeleteTarget(item)}>
-                        Xóa
-                      </Button>
-                    </Box>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+                        <Button size="small" variant="outlined" color="error" startIcon={<Trash2 size={18} />} onClick={() => setDeleteTarget(item)}>
+                          Xóa
+                        </Button>
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Pagination totalItems={totalItems} currentPage={currentPage} pageSize={pageSize} onPageChange={setCurrentPage} onPageSizeChange={setPageSize} />
+        </>
       )}
 
-      <Dialog open={deleteTarget != null} onClose={() => setDeleteTarget(null)}>
+      <Dialog open={deleteTarget != null} onClose={() => setDeleteTarget(null)} maxWidth="sm" fullWidth>
         <DialogTitle>Xác nhận xóa</DialogTitle>
         <DialogContent><DialogContentText>Bạn có chắc chắn muốn xóa quiz "{deleteTarget?.title}"?</DialogContentText></DialogContent>
         <DialogActions>
@@ -166,24 +287,24 @@ export default function QuizListPage() {
       </Dialog>
 
       {/* Create quiz choice dialog */}
-      <Dialog open={createDialogOpen} onClose={() => setCreateDialogOpen(false)}>
+      <Dialog open={createDialogOpen} onClose={() => setCreateDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Tạo quiz mới</DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ mb: 2 }}>Chọn cách tạo quiz:</DialogContentText>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Button
               variant="outlined"
-              startIcon={<AutoAwesomeIcon />}
+              startIcon={<Sparkles size={18} />}
               onClick={() => { setCreateDialogOpen(false); navigate('/lecturer/quiz/new'); }}
-              sx={{ justifyContent: 'flex-start', py: 1.5 }}
+              sx={{ justifyContent: 'flex-start', py: 1.5, minHeight: 44 }}
             >
               Tạo với AI — Tải tài liệu lên để tạo quiz tự động
             </Button>
             <Button
               variant="outlined"
-              startIcon={<CreateIcon />}
+              startIcon={<PenLine size={18} />}
               onClick={() => { setCreateDialogOpen(false); setManualDialogOpen(true); }}
-              sx={{ justifyContent: 'flex-start', py: 1.5 }}
+              sx={{ justifyContent: 'flex-start', py: 1.5, minHeight: 44 }}
             >
               Tạo thủ công — Tự thêm câu hỏi
             </Button>
@@ -195,7 +316,7 @@ export default function QuizListPage() {
       </Dialog>
 
       {/* Manual quiz title dialog */}
-      <Dialog open={manualDialogOpen} onClose={() => setManualDialogOpen(false)}>
+      <Dialog open={manualDialogOpen} onClose={() => setManualDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Tạo quiz thủ công</DialogTitle>
         <DialogContent>
           <DialogContentText sx={{ mb: 2 }}>Nhập tiêu đề cho bài quiz:</DialogContentText>

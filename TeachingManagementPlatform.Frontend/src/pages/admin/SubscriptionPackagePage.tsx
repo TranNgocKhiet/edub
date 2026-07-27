@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState, type CSSProperties, type ReactNode } from 'react';
 import { AxiosError } from 'axios';
+import { Box } from '@mui/material';
+import { Pencil, Trash2 } from 'lucide-react';
 import type {
   SubscriptionPackage,
   CreateSubscriptionPackageRequest,
@@ -8,6 +10,8 @@ import type {
 import type { ApiError } from '../../types/common';
 import * as subscriptionService from '../../services/subscriptionService';
 import { formatCurrency } from '../../utils/formatters';
+import Pagination, { usePagination } from '../../components/common/Pagination';
+import AdminPanelBanner from '../../components/common/AdminPanelBanner';
 
 const BYTES_PER_GB = 1024 * 1024 * 1024;
 const AVAILABLE_FEATURES = [
@@ -50,6 +54,8 @@ export default function SubscriptionPackagePage() {
   const [formError, setFormError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [formUpgradeDiscounts, setFormUpgradeDiscounts] = useState<Record<number, number>>({});
+
+  const { paginatedItems, currentPage, pageSize, totalItems, setCurrentPage, setPageSize } = usePagination(packages);
 
   const loadPackages = useCallback(async () => {
     setLoading(true);
@@ -239,8 +245,8 @@ export default function SubscriptionPackagePage() {
   const activeCount = packages.filter((p) => p.isActive).length;
 
   return (
-    <div style={pageStyle}>
-      <div style={heroStyle}>
+    <Box sx={{ ...pageStyle, p: { xs: 1.5, md: 3 } }}>
+      <AdminPanelBanner>
         <div>
           <p style={eyebrowStyle}>Gói đăng ký</p>
           <h1 style={titleStyle}>Quản lý gói đăng ký</h1>
@@ -249,7 +255,7 @@ export default function SubscriptionPackagePage() {
           </p>
         </div>
 
-        <div style={heroActionsStyle}>
+        <Box sx={{ ...heroActionsStyle, width: { xs: '100%', md: 'auto' }, minWidth: { xs: 0, md: 240 } }}>
           <div style={statsGridStyle}>
             <div style={statCardStyle}>
               <span style={statValueStyle}>{packages.length}</span>
@@ -261,11 +267,11 @@ export default function SubscriptionPackagePage() {
             </div>
           </div>
 
-          <button type="button" onClick={openCreateModal} className="btn btn-add">
+          <button type="button" onClick={openCreateModal} className="btn btn-add" style={{ minHeight: 44 }}>
             Thêm gói mới
           </button>
-        </div>
-      </div>
+        </Box>
+      </AdminPanelBanner>
 
       {error && <div role="alert" style={alertErrorStyle}>{error}</div>}
 
@@ -274,8 +280,9 @@ export default function SubscriptionPackagePage() {
       ) : packages.length === 0 ? (
         <div style={emptyStateStyle}>Chưa có gói đăng ký nào. Tạo gói mặc định miễn phí để bắt đầu.</div>
       ) : (
-        <div style={tableShellStyle}>
-          <table style={tableStyle}>
+        <>
+          <div style={tableShellStyle}>
+            <table style={tableStyle}>
             <thead>
               <tr>
                 <th style={thStyle}>Gói</th>
@@ -283,11 +290,11 @@ export default function SubscriptionPackagePage() {
                 <th style={thStyle}>Hạn mức</th>
                 <th style={thStyle}>Chức năng</th>
                 <th style={thStyle}>Trạng thái</th>
-                <th style={thStyle}>Hành động</th>
+                <th style={{ ...thStyle, textAlign: 'center' }}>Hành động</th>
               </tr>
             </thead>
             <tbody>
-              {packages.map((pkg) => (
+              {paginatedItems.map((pkg) => (
                 <tr key={pkg.id}>
                   <td style={tdStyle}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -328,30 +335,30 @@ export default function SubscriptionPackagePage() {
                   </td>
                   <td style={tdStyle}>
                     <div style={actionButtonsStyle}>
-                      <button type="button" onClick={() => openEditModal(pkg)} disabled={actionLoading} className="btn btn-update">Sửa</button>
-                      <button type="button" onClick={() => setDeleteTarget(pkg)} disabled={actionLoading || pkg.isDefault} className="btn btn-delete">
-                        {pkg.isDefault ? 'Không xóa' : 'Xóa'}
-                      </button>
+                      <button type="button" onClick={() => openEditModal(pkg)} title="Sửa" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'inline-flex', alignItems: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Pencil size={18} /></button>
+                      {!pkg.isDefault && <button type="button" onClick={() => setDeleteTarget(pkg)} title="Xóa" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'inline-flex', alignItems: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Trash2 size={18} /></button>}
                     </div>
                   </td>
                 </tr>
               ))}
-            </tbody>
-          </table>
-        </div>
+              </tbody>
+            </table>
+          </div>
+          <Pagination totalItems={totalItems} currentPage={currentPage} pageSize={pageSize} onPageChange={setCurrentPage} onPageSizeChange={setPageSize} />
+        </>
       )}
 
       {/* Create/Edit Modal */}
       {modal.type && (
         <div style={overlayStyle}>
-          <div style={modalStyle}>
-            <div style={modalHeaderStyle}>
+          <Box sx={{ ...modalStyle, width: { xs: '100%', md: 'min(920px, 100%)' }, maxHeight: { xs: 'calc(100dvh - 24px)', md: '90vh' }, p: { xs: 2, md: 3 } }}>
+            <Box sx={{ ...modalHeaderStyle, gap: { xs: 1, md: 2 } }}>
               <div>
                 <h2 style={modalTitleStyle}>{modal.type === 'create' ? 'Tạo gói mới' : 'Chỉnh sửa gói'}</h2>
                 <p style={modalSubtitleStyle}>Cấu hình hạn mức và chức năng mở khóa theo từng gói.</p>
               </div>
-              <button type="button" onClick={closeModal} style={closeButtonStyle} aria-label="Đóng">×</button>
-            </div>
+              <button type="button" onClick={closeModal} style={{ ...closeButtonStyle, minWidth: 44, minHeight: 44 }} aria-label="Đóng">×</button>
+            </Box>
 
             {formError && <div role="alert" style={alertErrorStyle}>{formError}</div>}
 
@@ -439,8 +446,8 @@ export default function SubscriptionPackagePage() {
                 <span style={helperTextStyle}>Cấu hình % giảm giá khi người dùng nâng cấp từ gói khác lên gói này.</span>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>
                   {/* Free plan (id=0) */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                    <span style={{ minWidth: 140, fontSize: 13 }}>Từ gói Miễn phí:</span>
+                  <Box component="div" sx={{ display: 'flex', alignItems: { xs: 'flex-start', sm: 'center' }, flexDirection: { xs: 'column', sm: 'row' }, gap: { xs: 0.75, sm: 1.5 } }}>
+                    <span style={{ fontSize: 13 }}>Từ gói Miễn phí:</span>
                     <input
                       type="number"
                       min={0}
@@ -450,13 +457,13 @@ export default function SubscriptionPackagePage() {
                       style={{ width: 60, padding: 6, borderRadius: 6, border: '1px solid #cbd5e1', textAlign: 'center' }}
                     />
                     <span style={{ fontSize: 13, color: '#64748b' }}>%</span>
-                  </div>
+                  </Box>
                   {/* Other packages */}
                   {packages
                     .filter((p) => p.id !== modal.pkg?.id && p.price > 0)
                     .map((p) => (
-                      <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                        <span style={{ minWidth: 140, fontSize: 13 }}>Từ gói {p.name}:</span>
+                      <Box key={p.id} component="div" sx={{ display: 'flex', alignItems: { xs: 'flex-start', sm: 'center' }, flexDirection: { xs: 'column', sm: 'row' }, gap: { xs: 0.75, sm: 1.5 } }}>
+                        <span style={{ fontSize: 13 }}>Từ gói {p.name}:</span>
                         <input
                           type="number"
                           min={0}
@@ -466,43 +473,43 @@ export default function SubscriptionPackagePage() {
                           style={{ width: 60, padding: 6, borderRadius: 6, border: '1px solid #cbd5e1', textAlign: 'center' }}
                         />
                         <span style={{ fontSize: 13, color: '#64748b' }}>%</span>
-                      </div>
+                      </Box>
                     ))}
                 </div>
               </section>
               )}
 
-              <div style={footerActionsStyle}>
-                <button type="button" onClick={closeModal} disabled={actionLoading} className="btn btn-neutral">Hủy</button>
-                <button type="submit" disabled={actionLoading} className="btn btn-update">
+              <Box sx={{ ...footerActionsStyle, flexDirection: { xs: 'column-reverse', sm: 'row' } }}>
+                <button type="button" onClick={closeModal} disabled={actionLoading} className="btn btn-neutral" style={{ minHeight: 44 }}>Hủy</button>
+                <button type="submit" disabled={actionLoading} className="btn btn-update" style={{ minHeight: 44 }}>
                   {actionLoading ? 'Đang xử lý...' : modal.type === 'create' ? 'Tạo gói' : 'Lưu thay đổi'}
                 </button>
-              </div>
+              </Box>
             </form>
-          </div>
+          </Box>
         </div>
       )}
 
       {/* Delete confirmation */}
       {deleteTarget && (
         <div style={overlayStyle}>
-          <div style={modalStyle}>
+          <Box sx={{ ...modalStyle, width: { xs: '100%', md: 'min(920px, 100%)' }, maxHeight: { xs: 'calc(100dvh - 24px)', md: '90vh' }, p: { xs: 2, md: 3 } }}>
             <h2 style={modalTitleStyle}>Xác nhận xóa</h2>
             <p style={{ ...modalSubtitleStyle, marginBottom: 20 }}>
               {deleteTarget.isDefault
                 ? 'Gói mặc định không thể xóa.'
                 : `Bạn có chắc chắn muốn xóa gói "${deleteTarget.name}"?`}
             </p>
-            <div style={footerActionsStyle}>
-              <button type="button" onClick={() => setDeleteTarget(null)} disabled={actionLoading} className="btn btn-neutral">Hủy</button>
-              <button type="button" onClick={handleDelete} disabled={actionLoading || deleteTarget.isDefault} className="btn btn-delete">
+            <Box sx={{ ...footerActionsStyle, flexDirection: { xs: 'column-reverse', sm: 'row' } }}>
+              <button type="button" onClick={() => setDeleteTarget(null)} disabled={actionLoading} className="btn btn-neutral" style={{ minHeight: 44 }}>Hủy</button>
+              <button type="button" onClick={handleDelete} disabled={actionLoading || deleteTarget.isDefault} className="btn btn-delete" style={{ minHeight: 44 }}>
                 {actionLoading ? 'Đang xử lý...' : 'Xóa'}
               </button>
-            </div>
-          </div>
+            </Box>
+          </Box>
         </div>
       )}
-    </div>
+    </Box>
   );
 }
 
@@ -543,8 +550,7 @@ function checkboxCardStyle(checked: boolean): CSSProperties {
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
-const pageStyle: CSSProperties = { padding: 24, background: 'var(--edub-surface)', borderRadius: 'var(--edub-banner-radius)' };
-const heroStyle: CSSProperties = { display: 'flex', justifyContent: 'space-between', gap: 24, alignItems: 'flex-start', marginBottom: 20, padding: 24, borderRadius: 'var(--edub-banner-radius)', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', color: '#fff', boxShadow: '0 18px 40px rgba(15, 23, 42, 0.16)' };
+const pageStyle: CSSProperties = { background: 'linear-gradient(180deg, #f8fbff 0%, #ffffff 100%)' };
 const heroActionsStyle: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 16, minWidth: 240 };
 const statsGridStyle: CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 };
 const statCardStyle: CSSProperties = { backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 16, padding: 14, display: 'flex', flexDirection: 'column', gap: 4, textAlign: 'center' };

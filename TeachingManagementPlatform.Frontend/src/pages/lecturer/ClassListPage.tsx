@@ -1,9 +1,15 @@
 import { useState, useEffect, useCallback, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AxiosError } from 'axios';
+import { Box, Button, Card, CardContent, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography, CircularProgress, Alert } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import { IconButton, Tooltip } from '@mui/material';
 import type { ClassDetail, CreateClassRequest, UpdateClassRequest } from '../../types/class';
 import type { ApiError } from '../../types/common';
 import * as classService from '../../services/classService';
+import ActionButton from '../../components/common/ActionButton';
+import Pagination, { usePagination } from '../../components/common/Pagination';
 
 interface ModalState {
   type: 'create' | 'edit' | null;
@@ -18,6 +24,9 @@ export default function ClassListPage() {
   const [modal, setModal] = useState<ModalState>({ type: null });
   const [deleteTarget, setDeleteTarget] = useState<ClassDetail | null>(null);
   const [actionLoading, setActionLoading] = useState(false);
+  const [hoveredRowId, setHoveredRowId] = useState<number | null>(null);
+
+  const { paginatedItems: paginatedClasses, currentPage, pageSize, totalItems, setCurrentPage, setPageSize } = usePagination(classes);
 
   // Form fields
   const [formName, setFormName] = useState('');
@@ -63,6 +72,11 @@ export default function ClassListPage() {
   function closeModal() {
     setModal({ type: null });
     setFormError('');
+  }
+
+  function handleSubmit() {
+    const event = { preventDefault: () => undefined } as FormEvent;
+    void (modal.type === 'create' ? handleCreateSubmit(event) : handleEditSubmit(event));
   }
 
   async function handleCreateSubmit(e: FormEvent) {
@@ -133,180 +147,176 @@ export default function ClassListPage() {
 
   return (
     <div style={{ padding: 24 }}>
-      <h1 style={{ marginBottom: 24, color: 'var(--edub-text-primary)' }}>Danh sách lớp học</h1>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+        <h1 style={{ margin: 0, color: 'var(--edub-text-primary)' }}>Danh sách lớp</h1>
+        <button
+          type="button"
+          onClick={openCreateModal}
+          className="btn btn-add"
+          style={{ borderRadius: 8 }}
+        >
+          + Thêm lớp
+        </button>
+      </div>
 
-      {error && (
-        <div role="alert" style={{ color: '#d32f2f', marginBottom: 16 }}>
-          {error}
-        </div>
-      )}
-
-      <button
-        type="button"
-        onClick={openCreateModal}
-        className="btn btn-add"
-        style={{ marginBottom: 16 }}
-      >
-        Thêm lớp
-      </button>
+      {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
       {loading ? (
-        <p>Đang tải...</p>
+        <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+          <CircularProgress />
+        </Box>
+      ) : classes.length === 0 ? (
+        <Typography sx={{ textAlign: 'center', py: 4, color: 'text.secondary' }}>
+          Không có lớp học nào
+        </Typography>
       ) : (
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-          <thead>
-            <tr>
-              <th style={thStyle}>Tên lớp</th>
-              <th style={thStyle}>Năm học</th>
-              <th style={thStyle}>Số học sinh</th>
-              <th style={thStyle}>Hành động</th>
-            </tr>
-          </thead>
-          <tbody>
-            {classes.length === 0 ? (
+        <>
+          <Box sx={{ display: { xs: 'flex', md: 'none' }, flexDirection: 'column', gap: 1.5 }}>
+            {paginatedClasses.map((cls) => (
+              <Card key={cls.id} sx={{ position: 'relative' }}>
+                <CardContent sx={{ p: 2 }}>
+                  <Box sx={{ position: 'absolute', top: 6, right: 6, display: 'flex' }}>
+                    <Tooltip title="Sửa lớp"><span><IconButton aria-label={`Sửa lớp ${cls.name}`} onClick={() => openEditModal(cls)} disabled={actionLoading} sx={{ minWidth: 40, minHeight: 40 }}><EditIcon fontSize="small" /></IconButton></span></Tooltip>
+                    <Tooltip title="Xóa lớp"><span><IconButton aria-label={`Xóa lớp ${cls.name}`} color="error" onClick={() => setDeleteTarget(cls)} disabled={actionLoading} sx={{ minWidth: 40, minHeight: 40 }}><DeleteIcon fontSize="small" /></IconButton></span></Tooltip>
+                  </Box>
+                  <Typography component="button" onClick={() => navigate(`/lecturer/classes/${cls.id}`)} sx={{ p: 0, pr: 9, minHeight: 44, border: 0, background: 'none', color: 'primary.main', fontWeight: 700, textAlign: 'left' }}>{cls.name}</Typography>
+                  <Typography variant="body2" color="text.secondary">Năm học: {cls.year}</Typography>
+                  <Typography variant="body2" color="text.secondary">Số học sinh: {cls.studentCount}</Typography>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+          <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
               <tr>
-                <td colSpan={4} style={{ textAlign: 'center', padding: 16 }}>
-                  Không có lớp học nào
-                </td>
+                <th style={thStyle}>Tên lớp</th>
+                <th style={thStyle}>Niên khóa</th>
+                <th style={thStyle}>Số học sinh</th>
+                <th style={{ ...thStyle, textAlign: 'center' }}>Hành động</th>
               </tr>
-            ) : (
-              classes.map((cls) => (
-                <tr key={cls.id}>
-                  <td style={tdStyle}>
-                    <button
-                      type="button"
-                      onClick={() => navigate(`/lecturer/classes/${cls.id}`)}
-                      style={{ background: 'none', border: 'none', color: 'var(--edub-link)', cursor: 'pointer', padding: 0, textDecoration: 'underline' }}
-                    >
-                      {cls.name}
-                    </button>
-                  </td>
-                  <td style={tdStyle}>{cls.year}</td>
-                  <td style={tdStyle}>{cls.studentCount}</td>
-                  <td style={tdStyle}>
-                    <button
-                      type="button"
-                      onClick={() => openEditModal(cls)}
-                      disabled={actionLoading}
-                      className="btn btn-update"
-                      style={{ marginRight: 8 }}
-                    >
-                      Sửa
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setDeleteTarget(cls)}
-                      disabled={actionLoading}
-                      className="btn btn-delete"
-                    >
-                      Xóa
-                    </button>
+            </thead>
+            <tbody>
+              {classes.length === 0 ? (
+                <tr>
+                  <td colSpan={4} style={{ textAlign: 'center', padding: 16 }}>
+                    Không có lớp học nào
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                paginatedClasses.map((cls) => (
+                  <tr
+                    key={cls.id}
+                    style={{ cursor: 'pointer', backgroundColor: hoveredRowId === cls.id ? '#f5f5f5' : undefined, transition: 'background-color 0.15s' }}
+                    onMouseEnter={() => setHoveredRowId(cls.id)}
+                    onMouseLeave={() => setHoveredRowId(null)}
+                    onClick={() => navigate(`/lecturer/classes/${cls.id}`)}
+                  >
+                    <td style={tdStyle}>{cls.name}</td>
+                    <td style={tdStyle}>{cls.year}</td>
+                    <td style={tdStyle}>{cls.studentCount}</td>
+                    <td style={{ ...tdStyle, textAlign: 'center' }} onClick={(e) => e.stopPropagation()}>
+                      <div style={{ display: 'flex', gap: 6, justifyContent: 'center' }}>
+                        <ActionButton icon="edit" label="Sửa" color="primary" onClick={() => openEditModal(cls)} disabled={actionLoading} />
+                        <ActionButton icon="delete" label="Xóa" color="error" onClick={() => setDeleteTarget(cls)} disabled={actionLoading} />
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+          </Box>
+          <Pagination totalItems={totalItems} currentPage={currentPage} pageSize={pageSize} onPageChange={setCurrentPage} onPageSizeChange={setPageSize} />
+        </>
       )}
 
       {/* Create / Edit Modal */}
-      {modal.type && (
-        <div style={overlayStyle}>
-          <div style={modalStyle}>
-            <h2 style={{ marginBottom: 16 }}>
-              {modal.type === 'create' ? 'Thêm lớp học' : 'Sửa lớp học'}
-            </h2>
+      <Dialog open={modal.type !== null} onClose={closeModal} maxWidth="sm" fullWidth>
+        <DialogTitle>
+          {modal.type === 'create' ? 'Thêm lớp học' : 'Sửa lớp học'}
+        </DialogTitle>
 
-            {formError && (
-              <div role="alert" style={{ color: '#d32f2f', marginBottom: 12 }}>
-                {formError}
-              </div>
-            )}
+        {formError && (
+          <Box sx={{ px: 3, pt: 0 }}>
+            <Alert severity="error">{formError}</Alert>
+          </Box>
+        )}
 
-            <form onSubmit={modal.type === 'create' ? handleCreateSubmit : handleEditSubmit} noValidate>
-              <div style={{ marginBottom: 12 }}>
-                <label htmlFor="modal-name" style={{ display: 'block', marginBottom: 4 }}>Tên lớp</label>
-                <input
-                  id="modal-name"
-                  type="text"
-                  placeholder="Nhập tên lớp"
-                  value={formName}
-                  onChange={(e) => setFormName(e.target.value)}
-                  style={inputStyle}
-                />
-              </div>
+        <DialogContent sx={{ pt: formError ? 1 : 2 }}>
+          <Box component="form" noValidate sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <TextField
+              autoFocus
+              label="Tên lớp"
+              placeholder="Nhập tên lớp"
+              value={formName}
+              onChange={(e) => setFormName(e.target.value)}
+              fullWidth
+              variant="outlined"
+            />
+            <TextField
+              label="Năm học"
+              placeholder="Nhập năm học (vd: 2024-2025)"
+              value={formYear}
+              onChange={(e) => setFormYear(e.target.value)}
+              fullWidth
+              variant="outlined"
+            />
+          </Box>
+        </DialogContent>
 
               <div style={{ marginBottom: 16 }}>
-                <label htmlFor="modal-year" style={{ display: 'block', marginBottom: 4 }}>Năm học</label>
+                <label htmlFor="modal-year" style={{ display: 'block', marginBottom: 4 }}>Niên khóa</label>
                 <input
                   id="modal-year"
                   type="text"
-                  placeholder="Nhập năm học (vd: 2024-2025)"
+                  placeholder="Nhập niên khóa (vd: 2024-2025)"
                   value={formYear}
                   onChange={(e) => setFormYear(e.target.value)}
                   style={inputStyle}
                 />
-              </div>
+                </div>
+        <DialogActions sx={{ p: 2, gap: 1 }}>
+          <Button onClick={closeModal} disabled={actionLoading}>Hủy</Button>
+          <Button onClick={handleSubmit} variant="contained" disabled={actionLoading}>
+            {actionLoading ? 'Đang xử lý...' : 'Lưu'}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
-              <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-                <button
-                  type="button"
-                  onClick={closeModal}
-                  disabled={actionLoading}
-                  className="btn btn-neutral"
-                >
-                  Hủy
-                </button>
-                <button
-                  type="submit"
-                  disabled={actionLoading}
-                  className="btn btn-update"
-                >
-                  {actionLoading ? 'Đang xử lý...' : 'Lưu'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Delete Confirmation */}
-      {deleteTarget && (
-        <div style={overlayStyle}>
-          <div style={modalStyle}>
-            <h2 style={{ marginBottom: 16 }}>Xác nhận xóa</h2>
-            <p style={{ marginBottom: 16 }}>
-              Bạn có chắc chắn muốn xóa lớp <strong>{deleteTarget.name}</strong>?
-            </p>
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-              <button
-                type="button"
-                onClick={() => setDeleteTarget(null)}
-                disabled={actionLoading}
-                className="btn btn-neutral"
-              >
-                Hủy
-              </button>
-              <button
-                type="button"
-                onClick={handleDelete}
-                disabled={actionLoading}
-                className="btn btn-delete"
-              >
-                {actionLoading ? 'Đang xử lý...' : 'Xóa'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteTarget !== null} onClose={() => setDeleteTarget(null)}>
+        <DialogTitle>Xác nhận xóa</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Bạn có chắc chắn muốn xóa lớp <strong>{deleteTarget?.name}</strong>?
+          </Typography>
+        </DialogContent>
+        <DialogActions sx={{ p: 2, gap: 1 }}>
+          <Button onClick={() => setDeleteTarget(null)} disabled={actionLoading}>
+            Hủy
+          </Button>
+          <Button
+            onClick={handleDelete}
+            variant="contained"
+            color="error"
+            disabled={actionLoading}
+          >
+            {actionLoading ? 'Đang xử lý...' : 'Xóa'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
 
 const thStyle: React.CSSProperties = {
   textAlign: 'left',
-  padding: '8px 12px',
-  borderBottom: '2px solid var(--edub-border)',
+  padding: '12px',
+  borderBottom: '2px solid',
+  borderColor: 'var(--edub-border)',
+  fontWeight: 600,
+  fontSize: '14px',
 };
 
 const tdStyle: React.CSSProperties = {
@@ -338,4 +348,5 @@ const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: 8,
   boxSizing: 'border-box',
+  borderRadius: 8,
 };

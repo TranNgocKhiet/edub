@@ -40,7 +40,7 @@ export default function QuizViewModal({ miniGameId, onClose }: QuizViewModalProp
   }
 
   return (
-    <div style={overlayStyle} role="dialog" aria-label="Xem mini game">
+    <div style={overlayStyle} role="dialog" aria-label="Xem trò chơi">
       <div style={modalStyle}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
           <h2>Xem mini game</h2>
@@ -104,8 +104,9 @@ const modalStyle: React.CSSProperties = {
   border: '1px solid var(--edub-border)',
   padding: 24,
   borderRadius: 8,
-  minWidth: 600,
+  width: 'min(600px, calc(100% - 24px))',
   maxWidth: 750,
-  maxHeight: '85vh',
+  maxHeight: 'calc(100dvh - 24px)',
+  boxSizing: 'border-box',
   overflowY: 'auto',
 };

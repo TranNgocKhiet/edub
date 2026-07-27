@@ -1,11 +1,15 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { AxiosError } from 'axios';
+import { Box } from '@mui/material';
+import { Pencil, Trash2 } from 'lucide-react';
 import type { ApiError } from '../../types/common';
 import * as scoreTemplateService from '../../services/scoreTemplateService';
 import type {
   ScoreTemplate,
   ScoreTemplateColumn,
 } from '../../services/scoreTemplateService';
+import Pagination, { usePagination } from '../../components/common/Pagination';
+import AdminPanelBanner from '../../components/common/AdminPanelBanner';
 
 interface ModalState {
   type: 'create' | 'edit' | null;
@@ -32,6 +36,8 @@ export default function ScoreTemplateManager() {
   const [formColumns, setFormColumns] = useState<ColumnFormRow[]>([]);
   const [formError, setFormError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const { paginatedItems, currentPage, pageSize, totalItems, setCurrentPage, setPageSize } = usePagination(templates);
 
   const loadTemplates = useCallback(async () => {
     setLoading(true);
@@ -220,8 +226,8 @@ export default function ScoreTemplateManager() {
   }
 
   return (
-    <div style={pageStyle}>
-      <div style={heroStyle}>
+    <Box sx={{ ...pageStyle, p: { xs: 1.5, md: 3 } }}>
+      <AdminPanelBanner>
         <div>
           <p style={eyebrowStyle}>Score Template</p>
           <h1 style={titleStyle}>Quản lý Template Điểm</h1>
@@ -230,7 +236,7 @@ export default function ScoreTemplateManager() {
           </p>
         </div>
 
-        <div style={heroActionsStyle}>
+        <Box sx={{ ...heroActionsStyle, width: { xs: '100%', md: 'auto' } }}>
           <div style={statsGridStyle}>
             <div style={statCardStyle}>
               <span style={statValueStyle}>{templates.length}</span>
@@ -238,11 +244,11 @@ export default function ScoreTemplateManager() {
             </div>
           </div>
 
-          <button type="button" onClick={openCreateModal} className="btn btn-add">
+          <button type="button" onClick={openCreateModal} className="btn btn-add" style={{ minHeight: 44 }}>
             Thêm template
           </button>
-        </div>
-      </div>
+        </Box>
+      </AdminPanelBanner>
 
       {error && (
         <div role="alert" style={alertErrorStyle}>
@@ -257,62 +263,51 @@ export default function ScoreTemplateManager() {
           Chưa có template nào. Tạo template đầu tiên để giáo viên có thể nhanh chóng thiết lập bảng điểm.
         </div>
       ) : (
-        <div style={tableShellStyle}>
-          <table style={tableStyle}>
-            <thead>
-              <tr>
-                <th style={thStyle}>Tên template</th>
-                <th style={thStyle}>Môn học</th>
-                <th style={thStyle}>Số cột</th>
-                <th style={thStyle}>Cấu hình cột</th>
-                <th style={thStyle}>Hành động</th>
-              </tr>
-            </thead>
-            <tbody>
-              {templates.map((tpl) => (
-                <tr key={tpl.id}>
-                  <td style={tdStyle}>{tpl.name}</td>
-                  <td style={tdStyle}>{tpl.subject}</td>
-                  <td style={tdStyle}>{tpl.columns.length}</td>
-                  <td style={tdStyle}>
-                    <div style={columnChipsStyle}>
-                      {tpl.columns
-                        .slice()
-                        .sort((a, b) => a.sortOrder - b.sortOrder)
-                        .map((col, idx) => (
-                          <span key={idx} style={col.isAverageColumn ? chipAvgStyle : chipStyle}>
-                            {col.name}
-                            {col.coefficient !== null && ` (×${col.coefficient})`}
-                            {col.isAverageColumn && ' [ĐTB]'}
-                          </span>
-                        ))}
-                    </div>
-                  </td>
-                  <td style={tdStyle}>
-                    <div style={actionButtonsStyle}>
-                      <button
-                        type="button"
-                        onClick={() => openEditModal(tpl)}
-                        disabled={actionLoading}
-                        className="btn btn-update"
-                      >
-                        Sửa
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setDeleteTarget(tpl)}
-                        disabled={actionLoading}
-                        className="btn btn-delete"
-                      >
-                        Xóa
-                      </button>
-                    </div>
-                  </td>
+        <>
+          <div style={tableShellStyle}>
+            <table style={tableStyle}>
+              <thead>
+                <tr>
+                  <th style={thStyle}>Tên template</th>
+                  <th style={thStyle}>Môn học</th>
+                  <th style={thStyle}>Số cột</th>
+                  <th style={thStyle}>Cấu hình cột</th>
+                  <th style={{ ...thStyle, textAlign: 'center' }}>Hành động</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {paginatedItems.map((tpl) => (
+                  <tr key={tpl.id}>
+                    <td style={tdStyle}>{tpl.name}</td>
+                    <td style={tdStyle}>{tpl.subject}</td>
+                    <td style={tdStyle}>{tpl.columns.length}</td>
+                    <td style={tdStyle}>
+                      <div style={columnChipsStyle}>
+                        {tpl.columns
+                          .slice()
+                          .sort((a, b) => a.sortOrder - b.sortOrder)
+                          .map((col, idx) => (
+                            <span key={idx} style={col.isAverageColumn ? chipAvgStyle : chipStyle}>
+                              {col.name}
+                              {col.coefficient !== null && ` (×${col.coefficient})`}
+                              {col.isAverageColumn && ' [ĐTB]'}
+                            </span>
+                          ))}
+                      </div>
+                    </td>
+                    <td style={tdStyle}>
+                      <div style={actionButtonsStyle}>
+                        <button type="button" onClick={() => openEditModal(tpl)} title="Sửa" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'inline-flex', alignItems: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Pencil size={18} /></button>
+                        <button type="button" onClick={() => setDeleteTarget(tpl)} title="Xóa" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, display: 'inline-flex', alignItems: 'center', opacity: 0.7 }} onMouseEnter={e => (e.currentTarget.style.opacity = '1')} onMouseLeave={e => (e.currentTarget.style.opacity = '0.7')}><Trash2 size={18} /></button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <Pagination totalItems={totalItems} currentPage={currentPage} pageSize={pageSize} onPageChange={setCurrentPage} onPageSizeChange={setPageSize} />
+        </>
       )}
 
       {/* Create/Edit Modal */}
@@ -496,7 +491,7 @@ export default function ScoreTemplateManager() {
           </div>
         </div>
       )}
-    </div>
+    </Box>
   );
 }
 
@@ -513,9 +508,7 @@ function Field({ label, error, children }: { label: string; error?: string; chil
 // ─── Styles ──────────────────────────────────────────────────────
 
 const pageStyle: React.CSSProperties = {
-  padding: 24,
-  background: 'var(--edub-surface)',
-  borderRadius: 'var(--edub-banner-radius)',
+  background: 'linear-gradient(180deg, #f8fbff 0%, #ffffff 100%)',
 };
 
 const heroStyle: React.CSSProperties = {
