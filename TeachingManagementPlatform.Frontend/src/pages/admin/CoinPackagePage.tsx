@@ -352,7 +352,8 @@ function Field({ label, error, children }: { label: string; error?: string; chil
 
 const pageStyle: React.CSSProperties = {
   padding: 24,
-  background: 'linear-gradient(180deg, #f8fbff 0%, #ffffff 100%)',
+  background: 'var(--edub-surface)',
+  borderRadius: 'var(--edub-banner-radius)',
 };
 
 const heroStyle: React.CSSProperties = {
@@ -362,7 +363,7 @@ const heroStyle: React.CSSProperties = {
   alignItems: 'flex-start',
   marginBottom: 20,
   padding: 24,
-  borderRadius: 20,
+  borderRadius: 'var(--edub-banner-radius)',
   background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
   color: '#fff',
   boxShadow: '0 18px 40px rgba(15, 23, 42, 0.16)',
@@ -442,9 +443,10 @@ const emptyStateStyle: React.CSSProperties = {
 
 const tableShellStyle: React.CSSProperties = {
   overflowX: 'auto',
-  borderRadius: 16,
-  border: '1px solid #e2e8f0',
-  backgroundColor: '#fff',
+  overflowY: 'hidden',
+  borderRadius: 'var(--edub-banner-radius)',
+  border: '1px solid var(--edub-table-border)',
+  backgroundColor: 'var(--edub-surface)',
 };
 
 const tableStyle: React.CSSProperties = {
@@ -455,8 +457,9 @@ const tableStyle: React.CSSProperties = {
 const thStyle: React.CSSProperties = {
   textAlign: 'left',
   padding: '12px 14px',
-  borderBottom: '1px solid #e2e8f0',
-  backgroundColor: '#f8fafc',
+  borderBottom: '1px solid var(--edub-table-border)',
+  backgroundColor: 'var(--edub-table-header-bg)',
+  color: 'var(--edub-table-header-text)',
 };
 
 const tdStyle: React.CSSProperties = {

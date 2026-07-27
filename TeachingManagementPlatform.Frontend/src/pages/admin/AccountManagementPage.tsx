@@ -170,7 +170,7 @@ export default function AccountManagementPage() {
 
   return (
     <div style={{ padding: 24 }}>
-      <h1 style={{ marginBottom: 24, color: '#000' }}>Quản lý tài khoản giáo viên</h1>
+      <h1 style={{ marginBottom: 24, color: 'var(--edub-text-primary)' }}>Quản lý tài khoản giáo viên</h1>
 
       {error && (
         <div role="alert" style={{ color: '#d32f2f', marginBottom: 16 }}>
@@ -396,7 +396,9 @@ export default function AccountManagementPage() {
 const thStyle: React.CSSProperties = {
   textAlign: 'left',
   padding: '8px 12px',
-  borderBottom: '2px solid #ccc',
+  borderBottom: '2px solid var(--edub-table-border)',
+  backgroundColor: 'var(--edub-table-header-bg)',
+  color: 'var(--edub-table-header-text)',
 };
 
 const tdStyle: React.CSSProperties = {

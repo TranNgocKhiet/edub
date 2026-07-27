@@ -53,6 +53,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [subName, setSubName] = useState<string | null>(null);
   const [subExpires, setSubExpires] = useState<string | null>(null);
   const [coinBalance, setCoinBalance] = useState<number | null>(null);
+  const [freeEcoinBalance, setFreeEcoinBalance] = useState<number | null>(null);
+  const [freeEcoinMax, setFreeEcoinMax] = useState(50);
 
   useEffect(() => {
     if (role !== Role.Admin) {
@@ -65,6 +67,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           setSubName(wallet.subscriptionPackageName ?? null);
           setSubExpires(wallet.subscriptionExpiresAt ?? null);
           setCoinBalance(wallet.coinBalance);
+          setFreeEcoinBalance(wallet.freeEcoinBalance ?? 0);
+          setFreeEcoinMax(wallet.freeEcoinMax ?? 50);
         } catch {}
       })();
     }
@@ -74,6 +78,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const daysRemaining = subExpires
     ? Math.max(0, Math.ceil((new Date(subExpires).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
     : null;
+  const isFreePlan = subName?.trim().toLocaleLowerCase('vi-VN') === 'miễn phí'
+    || subName?.trim().toLocaleLowerCase('vi-VN') === 'free';
 
   function handleLogout() {
     localStorage.removeItem('token');
@@ -166,8 +172,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           elevation={0}
           sx={{
             borderRadius: 3,
-            border: '1px solid',
-            borderColor: 'divider',
+            border: '1px solid var(--edub-border)',
+            backgroundColor: 'var(--edub-surface) !important',
+            backgroundImage: 'none',
             p: { xs: 1, sm: 2 },
             position: { md: 'sticky' },
             top: { md: 16 },
@@ -192,7 +199,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     },
                   },
                   '&:hover': {
-                    bgcolor: 'rgba(196, 138, 16, 0.12)',
+                    bgcolor: 'action.hover',
                   },
                 }}
               >
@@ -209,9 +216,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {role !== Role.Admin && (
             <Box sx={{ mt: 2, p: 1.5, borderRadius: 2, bgcolor: 'action.hover' }}>
               {coinBalance !== null && (
-                <Typography variant="body2" sx={{ fontWeight: 700, mb: 1 }}>
-                  🪙 {coinBalance.toLocaleString('vi-VN')} ECoin
-                </Typography>
+                <Box sx={{ mb: 1 }}>
+                  <Typography variant="body2" sx={{ fontWeight: 700, mb: 0.5 }}>
+                    🪙 ECoin
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                    Miễn phí: {(freeEcoinBalance ?? 0).toLocaleString('vi-VN')}/{freeEcoinMax.toLocaleString('vi-VN')}
+                  </Typography>
+                  <Typography variant="caption" color="text.secondary" sx={{ display: 'block' }}>
+                    Trả phí: {coinBalance.toLocaleString('vi-VN')}
+                  </Typography>
+                </Box>
               )}
               {subName ? (
                 <>
@@ -221,7 +236,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                     size="small"
                     sx={{ fontWeight: 600, mb: 0.5 }}
                   />
-                  {daysRemaining !== null && (
+                  {!isFreePlan && daysRemaining !== null && (
                     <Typography variant="caption" sx={{ display: 'block', mt: 0.5, color: daysRemaining <= 5 ? 'error.main' : 'text.secondary' }}>
                       {daysRemaining > 0 ? `Còn ${daysRemaining} ngày` : 'Đã hết hạn'}
                     </Typography>
@@ -240,8 +255,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           elevation={0}
           sx={{
             borderRadius: 3,
-            border: '1px solid',
-            borderColor: 'divider',
+            border: '1px solid var(--edub-border)',
+            backgroundColor: 'var(--edub-surface) !important',
+            backgroundImage: 'none',
             p: { xs: 1, sm: 2 },
             minWidth: 0,
           }}

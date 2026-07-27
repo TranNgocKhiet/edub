@@ -63,6 +63,9 @@ export function createMd3Theme(mode: ColorMode) {
         secondary: isDark ? 'rgba(244, 235, 219, 0.76)' : 'rgba(32, 26, 17, 0.72)',
       },
       divider: isDark ? 'rgba(232, 216, 186, 0.2)' : 'rgba(196, 138, 16, 0.16)',
+      action: {
+        hover: isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(196, 138, 16, 0.1)',
+      },
     },
     components: {
       MuiCssBaseline: {

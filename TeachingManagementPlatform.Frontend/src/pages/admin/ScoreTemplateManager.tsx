@@ -514,7 +514,8 @@ function Field({ label, error, children }: { label: string; error?: string; chil
 
 const pageStyle: React.CSSProperties = {
   padding: 24,
-  background: 'linear-gradient(180deg, #f8fbff 0%, #ffffff 100%)',
+  background: 'var(--edub-surface)',
+  borderRadius: 'var(--edub-banner-radius)',
 };
 
 const heroStyle: React.CSSProperties = {
@@ -617,8 +618,9 @@ const tableStyle: React.CSSProperties = {
 const thStyle: React.CSSProperties = {
   textAlign: 'left',
   padding: '12px 14px',
-  borderBottom: '1px solid #e2e8f0',
-  backgroundColor: '#f8fafc',
+  borderBottom: '1px solid var(--edub-table-border)',
+  backgroundColor: 'var(--edub-table-header-bg)',
+  color: 'var(--edub-table-header-text)',
 };
 
 const tdStyle: React.CSSProperties = {

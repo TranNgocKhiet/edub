@@ -543,8 +543,8 @@ function checkboxCardStyle(checked: boolean): CSSProperties {
 
 // ── Styles ────────────────────────────────────────────────────────────────────
 
-const pageStyle: CSSProperties = { padding: 24, background: 'linear-gradient(180deg, #f8fbff 0%, #ffffff 100%)' };
-const heroStyle: CSSProperties = { display: 'flex', justifyContent: 'space-between', gap: 24, alignItems: 'flex-start', marginBottom: 20, padding: 24, borderRadius: 20, background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', color: '#fff', boxShadow: '0 18px 40px rgba(15, 23, 42, 0.16)' };
+const pageStyle: CSSProperties = { padding: 24, background: 'var(--edub-surface)', borderRadius: 'var(--edub-banner-radius)' };
+const heroStyle: CSSProperties = { display: 'flex', justifyContent: 'space-between', gap: 24, alignItems: 'flex-start', marginBottom: 20, padding: 24, borderRadius: 'var(--edub-banner-radius)', background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)', color: '#fff', boxShadow: '0 18px 40px rgba(15, 23, 42, 0.16)' };
 const heroActionsStyle: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 16, minWidth: 240 };
 const statsGridStyle: CSSProperties = { display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 12 };
 const statCardStyle: CSSProperties = { backgroundColor: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: 16, padding: 14, display: 'flex', flexDirection: 'column', gap: 4, textAlign: 'center' };
@@ -555,9 +555,9 @@ const titleStyle: CSSProperties = { margin: '10px 0 12px', fontSize: 36, lineHei
 const subtitleStyle: CSSProperties = { margin: 0, maxWidth: 760, fontSize: 15, lineHeight: 1.7, color: 'rgba(255,255,255,0.82)' };
 const alertErrorStyle: CSSProperties = { padding: '12px 14px', marginBottom: 16, borderRadius: 14, backgroundColor: '#fff1f1', border: '1px solid #f1b7b7', color: '#b42318' };
 const emptyStateStyle: CSSProperties = { padding: 28, borderRadius: 18, backgroundColor: '#fff', border: '1px dashed #d9e2ec', color: '#4b5563' };
-const tableShellStyle: CSSProperties = { overflowX: 'auto', borderRadius: 18, border: '1px solid #e5e7eb', backgroundColor: '#fff', boxShadow: '0 8px 24px rgba(15, 23, 42, 0.06)' };
+const tableShellStyle: CSSProperties = { overflowX: 'auto', overflowY: 'hidden', borderRadius: 'var(--edub-banner-radius)', border: '1px solid var(--edub-table-border)', backgroundColor: 'var(--edub-surface)', boxShadow: '0 8px 24px rgba(15, 23, 42, 0.06)' };
 const tableStyle: CSSProperties = { width: '100%', borderCollapse: 'collapse' };
-const thStyle: CSSProperties = { textAlign: 'left', padding: '14px 16px', borderBottom: '1px solid #e5e7eb', fontSize: 13, textTransform: 'uppercase', letterSpacing: 0.7, color: '#6b7280', backgroundColor: '#f8fafc' };
+const thStyle: CSSProperties = { textAlign: 'left', padding: '14px 16px', borderBottom: '1px solid var(--edub-table-border)', fontSize: 13, textTransform: 'uppercase', letterSpacing: 0.7, color: 'var(--edub-table-header-text)', backgroundColor: 'var(--edub-table-header-bg)' };
 const tdStyle: CSSProperties = { padding: '14px 16px', borderBottom: '1px solid #eef2f7', verticalAlign: 'top' };
 const limitStackStyle: CSSProperties = { display: 'flex', flexDirection: 'column', gap: 6 };
 const limitMetaStyle: CSSProperties = { fontSize: 13, color: '#6b7280' };

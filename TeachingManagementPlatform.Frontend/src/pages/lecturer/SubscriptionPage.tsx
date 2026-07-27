@@ -215,7 +215,7 @@ export default function SubscriptionPage() {
 }
 
 const pageStyle: React.CSSProperties = { padding: 24 };
-const heroStyle: React.CSSProperties = { marginBottom: 24, padding: 24, borderRadius: 20, background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)', color: '#fff' };
+const heroStyle: React.CSSProperties = { marginBottom: 24, padding: 24, borderRadius: 'var(--edub-banner-radius)', background: 'linear-gradient(135deg, #0f172a 0%, #334155 100%)', color: '#fff' };
 const eyebrowStyle: React.CSSProperties = { margin: 0, textTransform: 'uppercase', letterSpacing: '0.14em', fontSize: 12, color: 'rgba(255,255,255,0.72)' };
 const titleStyle: React.CSSProperties = { margin: '8px 0 8px' };
 const subtitleStyle: React.CSSProperties = { margin: 0, maxWidth: 760, lineHeight: 1.6, color: 'rgba(255,255,255,0.8)' };
@@ -228,7 +228,7 @@ const cardHeaderStyle: React.CSSProperties = { display: 'flex', alignItems: 'cen
 const cardTitleStyle: React.CSSProperties = { margin: 0, fontSize: 20 };
 const defaultBadge: React.CSSProperties = { padding: '4px 10px', borderRadius: 999, backgroundColor: '#e3f2fd', color: '#1565c0', fontSize: 12, fontWeight: 600 };
 const priceRowStyle: React.CSSProperties = { marginBottom: 16 };
-const priceValueStyle: React.CSSProperties = { fontSize: 24, color: '#0f172a' };
+const priceValueStyle: React.CSSProperties = { fontSize: 24, color: 'var(--edub-text-primary)' };
 const featureListStyle: React.CSSProperties = { listStyle: 'none', padding: 0, margin: '0 0 16px', display: 'flex', flexDirection: 'column', gap: 6, fontSize: 14 };
-const limitStyle: React.CSSProperties = { color: '#64748b', paddingLeft: 16 };
+const limitStyle: React.CSSProperties = { color: 'var(--edub-text-secondary)', paddingLeft: 16 };
 const freeNote: React.CSSProperties = { margin: '12px 0 0', fontSize: 13, color: '#94a3b8', fontStyle: 'italic' };

@@ -8,6 +8,16 @@
   --edub-input-bg: #ffffff;
   --edub-input-border: rgba(86, 70, 41, 0.35);
   --edub-link: #1565c0;
+  --edub-hover: rgba(196, 138, 16, 0.1);
+  --edub-banner-radius: 20px;
+  --edub-table-border: #e2e8f0;
+  --edub-table-header-bg: #f8fafc;
+  --edub-table-header-text: #475569;
+  --btn-add: #2e7d32;
+  --btn-view: #1565c0;
+  --btn-update: #d7b34b;
+  --btn-delete: #ba1a1a;
+  --btn-neutral: #d2dae6;
 }
 
 :root[data-color-mode="dark"] {
@@ -20,6 +30,10 @@
   --edub-input-bg: #3f3931;
   --edub-input-border: rgba(255, 255, 255, 0.3);
   --edub-link: #7cb7ff;
+  --edub-hover: rgba(255, 255, 255, 0.06);
+  --edub-table-border: rgba(232, 216, 186, 0.24);
+  --edub-table-header-bg: #433c33;
+  --edub-table-header-text: #f4ebdb;
 }
 
 * {
@@ -49,6 +63,10 @@
   transform: translateY(-1px);
 }
 
+:root[data-color-mode="dark"] .btn:hover {
+  filter: brightness(0.92);
+}
+
 .btn:disabled {
   opacity: 0.56;
   cursor: not-allowed;
@@ -57,7 +75,7 @@
 .btn-add,
 .btn-save {
   color: #ffffff;
-  background: #2e7d32;
+  background: var(--btn-add);
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.14),
     0 1px 3px rgba(46, 125, 50, 0.28);
@@ -65,7 +83,7 @@
 
 .btn-view {
   color: #ffffff;
-  background: #1565c0;
+  background: var(--btn-view);
   box-shadow:
     0 1px 2px rgba(0, 0, 0, 0.14),
     0 1px 3px rgba(21, 101, 192, 0.3);
@@ -73,18 +91,18 @@
 
 .btn-update {
   color: #2a2008;
-  background: #d7b34b;
+  background: var(--btn-update);
 }
 
 .btn-neutral,
 .btn-cancel {
   color: #1f2a39;
-  background: #d2dae6;
+  background: var(--btn-neutral);
 }
 
 .btn-delete {
   color: #ffffff;
-  background: #ba1a1a;
+  background: var(--btn-delete);
 }
 
 :root[data-color-mode="dark"] .btn-add,
