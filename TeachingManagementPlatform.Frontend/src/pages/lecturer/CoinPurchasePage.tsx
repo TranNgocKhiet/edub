@@ -192,7 +192,7 @@ export default function CoinPurchasePage() {
           {[...packages].sort((a, b) => a.price - b.price).map((pkg) => (
             <article key={pkg.id} style={cardStyle}>
               <Box sx={{ ...cardHeaderStyle, flexDirection: { xs: 'column', sm: 'row' } }}>
-                <div>
+                <div style={cardContentStyle}>
                   <h2 style={cardTitleStyle}>{pkg.name}</h2>
                   <strong style={priceValueStyle}>{formatCurrency(pkg.price)}</strong>
                   <p style={cardSubtitleStyle}>{pkg.description || 'Gói nạp coin cho AI quiz.'}</p>
@@ -205,7 +205,9 @@ export default function CoinPurchasePage() {
                 className="btn btn-add"
                 disabled={actionLoading === pkg.id || !pkg.isActive}
                 onClick={() => void purchasePackage(pkg)}
-                style={{ width: '100%', marginTop: 'auto' }}
+                onMouseEnter={(event) => { event.currentTarget.style.filter = 'brightness(0.94)'; }}
+                onMouseLeave={(event) => { event.currentTarget.style.filter = ''; }}
+                style={{ width: '100%', marginTop: 'auto', transition: 'filter 150ms ease, transform 120ms ease' }}
               >
                 {actionLoading === pkg.id ? 'Đang nạp...' : pkg.isActive ? 'Mua ngay' : 'Tạm ẩn'}
               </button>
@@ -298,16 +300,30 @@ const cardHeaderStyle: React.CSSProperties = {
   display: 'flex',
   justifyContent: 'space-between',
   gap: 12,
+  flex: 1,
 };
 
 const cardTitleStyle: React.CSSProperties = {
   margin: 0,
+  minHeight: '2.5em',
+  lineHeight: 1.25,
+  display: '-webkit-box',
+  WebkitBoxOrient: 'vertical',
+  WebkitLineClamp: 2,
+  overflow: 'hidden',
+};
+
+const cardContentStyle: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  flex: 1,
 };
 
 const cardSubtitleStyle: React.CSSProperties = {
   margin: '8px 0 0',
   color: 'var(--edub-text-secondary)',
   lineHeight: 1.5,
+  flex: 1,
 };
 
 const coinBadgeStyle: React.CSSProperties = {
@@ -322,5 +338,8 @@ const coinBadgeStyle: React.CSSProperties = {
 };
 
 const priceValueStyle: React.CSSProperties = {
-  fontSize: 20,
+  fontSize: 28,
+  fontWeight: 800,
+  lineHeight: 1.2,
+  marginTop: 4,
 };
