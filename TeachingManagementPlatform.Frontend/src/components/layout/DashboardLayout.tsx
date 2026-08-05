@@ -90,8 +90,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const daysRemaining = subExpires
     ? Math.max(0, Math.ceil((new Date(subExpires).getTime() - sessionStartedAt) / (1000 * 60 * 60 * 24)))
     : null;
-  const isFreePlan = subName?.trim().toLocaleLowerCase('vi-VN') === 'miễn phí'
-    || subName?.trim().toLocaleLowerCase('vi-VN') === 'free';
+  const normalizedPlanName = subName?.trim().toLocaleLowerCase('vi-VN') ?? '';
+  const isFreePlan = normalizedPlanName.includes('miễn phí') || normalizedPlanName.includes('free');
 
   function handleLogout() {
     localStorage.removeItem('token');
