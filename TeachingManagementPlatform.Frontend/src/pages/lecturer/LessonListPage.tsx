@@ -218,13 +218,14 @@ export default function LessonListPage() {
       {/* Add lesson button */}
       <div style={{ marginBottom: 16, display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
           <>
-            <button className="btn btn-add" onClick={() => setAdding(true)}>+ Thêm bài học</button>
+            <button className="btn btn-add" onClick={() => setAdding(true)} style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', height: 44, minHeight: 44, paddingTop: 0, paddingBottom: 0 }}>+ Thêm bài học</button>
             <Button
               variant="outlined"
               startIcon={<BookOpenText size={18} />}
               onClick={handleAutoGenerateClick}
               disabled={actionLoading}
               size="small"
+              sx={{ display: 'inline-flex', alignItems: 'center', height: 44, minHeight: 44, py: 0 }}
             >
               Sử dụng giáo án có sẵn
             </Button>
@@ -234,6 +235,7 @@ export default function LessonListPage() {
               onClick={openBatchAI}
               disabled={actionLoading || plan.lessons.length === 0}
               size="small"
+              sx={{ display: 'inline-flex', alignItems: 'center', height: 44, minHeight: 44, py: 0 }}
             >
               Gợi ý AI cho toàn bộ
             </Button>
@@ -280,7 +282,7 @@ export default function LessonListPage() {
           Chưa có bài học nào. Nhấn "+ Thêm bài học" để bắt đầu.
         </Box>
       ) : (
-        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
           {plan.lessons
             .slice()
             .sort((a, b) => a.orderIndex - b.orderIndex)
@@ -290,36 +292,42 @@ export default function LessonListPage() {
                 variant="outlined"
                 sx={{
                   borderRadius: 2,
+                  px: 2,
                   cursor: 'pointer',
                   transition: 'box-shadow 150ms ease',
                   '&:hover': { boxShadow: 2 },
                 }}
                 onClick={() => navigate(`/lecturer/lessons/${lesson.id}/edit`)}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <span style={{ fontWeight: 700, marginRight: 8, color: 'var(--edub-text-secondary)' }}>
-                    {idx + 1}.
-                  </span>
-                  <span style={{ fontWeight: 600 }}>{lesson.name}</span>
-                  <Tooltip title="Gợi ý AI">
-                    <IconButton
-                      size="small"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenAISuggestion(lesson.id, lesson.name);
-                      }}
-                      aria-label={`Gợi ý AI cho bài ${lesson.name}`}
-                      sx={{ ml: 0.5, color: 'primary.main' }}
-                    >
-                      <Sparkles size={18} />
-                    </IconButton>
-                  </Tooltip>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <span onClick={(e) => e.stopPropagation()}>
+                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 1, py: 0.5, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 4, minWidth: 0 }}>
+                    <span style={{ flex: '0 0 auto', fontWeight: 700, marginRight: 8, color: 'var(--edub-text-secondary)', lineHeight: 1.25 }}>
+                      {idx + 1}.
+                    </span>
+                    <span style={{ fontWeight: 600, lineHeight: 1.25 }}>{lesson.name}</span>
+                    <Tooltip title="Gợi ý AI">
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenAISuggestion(lesson.id, lesson.name);
+                        }}
+                        aria-label={`Gợi ý AI cho bài ${lesson.name}`}
+                        sx={{ ml: 0.5, color: 'primary.main' }}
+                      >
+                        <Sparkles size={18} />
+                      </IconButton>
+                    </Tooltip>
+                  </div>
+                  <span
+                    style={{ flex: '0 0 auto', color: 'var(--btn-delete)', borderRadius: 4, transition: 'background-color 150ms ease' }}
+                    onClick={(e) => e.stopPropagation()}
+                    onMouseEnter={(event) => { event.currentTarget.style.backgroundColor = 'var(--edub-hover)'; }}
+                    onMouseLeave={(event) => { event.currentTarget.style.backgroundColor = 'transparent'; }}
+                  >
                     <CrudIcon name="delete" tooltip="Xóa bài học" onClick={() => setDeleteLessonTarget(lesson.id)} disabled={actionLoading} />
                   </span>
-                </div>
+                </Box>
               </Card>
             ))}
         </Box>
